@@ -9,6 +9,8 @@ import com.mysql.jdbc.Connection;
 public class DaoConnection{
 
 	private Connection connection;
+	
+	private final static DaoConnection _instance = new DaoConnection();
 
 	
 	public DaoConnection() {
@@ -44,7 +46,12 @@ public class DaoConnection{
 		this.connection = connection;
 	}
 
-
+	/**
+	 * @return the Instance
+	 */
+	public static DaoConnection getInstance() {
+		return _instance;
+	}
 	
 	
 	public static void main(String args[]) {
@@ -58,4 +65,7 @@ public class DaoConnection{
 			e.printStackTrace();
 		}
 	}
+
+
+	
 }

@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -8,6 +9,7 @@ public class DaoService {
 
 	private Statement statement;
 	
+	private final static DaoService _instance = new DaoService(DaoConnection.getInstance());
 	
 	public DaoService(DaoConnection _connectionSingleton) {
 		try {
@@ -32,21 +34,25 @@ public class DaoService {
 		this.statement = _statement;
 	}
 	
-	
-	public void create(String query) {
-		
+	/**
+	 * @return the Instance
+	 */
+	public static DaoService getInstance() {
+		return _instance;
 	}
 	
-	public void select() {
-		
-	}
 	
-	public void update() {
-		
+	public ResultSet query(String _query) {
+		ResultSet res=null;
+		try {
+			res=this.statement.executeQuery(_query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
 	}
+
+
 	
-	public void delete() {
-		
-	}
 	
 }
