@@ -1,7 +1,7 @@
 Servers/
-.metadata
-computer-database/.settings
+.metadata/
+computer-database/.settings/
 computer-database/.classpath
 computer-database/.project
-computer-database/build
+computer-database/build/
 
