@@ -11,6 +11,13 @@ public class Computer {
 	private int compagny_id;
 	
 	
+	public Computer(String _name, Date _date_introduced,Date _date_discontinued, int _compagny_id) {
+		this.name=_name;
+		this.date_introduced=_date_introduced;
+		this.date_discontinued=_date_discontinued;
+		this.compagny_id=_compagny_id; 
+	}
+	
 	/**
 	 * @return the id
 	 */
