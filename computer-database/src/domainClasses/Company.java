@@ -5,6 +5,14 @@ public class Company {
 	private int id;
 	private String name;
 	
+	public Company() {
+		super();
+	}
+	
+	public Company(String _name) {
+		this.name=_name;
+	}
+	
 	/**
 	 * @return the id
 	 */
@@ -32,5 +40,17 @@ public class Company {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@Override
+	public String toString() {
+		return "Id="+id+" name="+name;
+	}
+	
+	
+	public boolean equals(Company _company) {
+		return (this.id==_company.getId());
+	}
+	
+	
 	
 }

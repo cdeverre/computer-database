@@ -3,7 +3,7 @@
 <%@ page import="java.sql.ResultSet" %>
 
 	
-<%  ResultSet r=DaoService.getInstance().query("SELECT * FROM computer"); 
+<% // ResultSet r=request.getAttribute("resultat");
 //	while (r.next()) {
 //		out.print("<tr><td><a href=\"#\" onclick\"\"=>"+r.getString(2)+"</a></td>"+
 //		"<td>"+r.getString(3)+"</td>"+

@@ -48,12 +48,19 @@ public class ComputerDao {
 		this.statement = statement;
 	}
 	
+	
+	
 	public void create(Computer _computer) {
 		try {
-			this.statement.executeUpdate("INSERT INTO computer SET id='"+_computer.getId()+"'," +
-					" name='"+_computer.getName()+"', introduced='"+_computer.getDate_introduced().getYear()+"-"+_computer.getDate_introduced().getMonth()+"-"+_computer.getDate_introduced().getDay()+
-					"'"/*, discontinued="+_computer.getDate_discontinued()+"', company_id='"+_computer.getCompagny_id()+"'"*/);
-		
+			
+			String query ="INSERT INTO computer SET id=null," +
+					" name='"+_computer.getName()+"', introduced='"+
+					_computer.getDateIntroduced().getYear()+"-"+_computer.getDateIntroduced().getMonth()+"-"+_computer.getDateIntroduced().getDay()+
+					"', discontinued="+_computer.getDateDiscontinued().getYear()+"-"+_computer.getDateDiscontinued().getMonth()+"-"+_computer.getDateDiscontinued().getDay()+
+					"', company_id='"+_computer.getCompany().getId()+"'";
+			this.statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			_computer.setId(this.statement.getGeneratedKeys().getInt(1));
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -61,8 +68,9 @@ public class ComputerDao {
 	
 	public void update(Computer _computer) {
 		try {
-			this.statement.executeUpdate("UPDATE computer SET name='"+_computer.getName()+"', introduced='"+_computer.getDate_introduced()+
-					"', discontinued="+_computer.getDate_discontinued()+"', company_id='"+_computer.getCompagny_id()+"'"+"' WHERE id='"+_computer.getId()+"'");
+			String query=("UPDATE computer SET name='"+_computer.getName()+"', introduced='"+_computer.getDateIntroduced()+
+					"', discontinued="+_computer.getDateDiscontinued()+"', company_id='"+_computer.getCompany()+"'"+"' WHERE id='"+_computer.getId()+"'");
+			this.statement.executeUpdate(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -85,8 +93,8 @@ public class ComputerDao {
 	}*/
 	
 	public static void main(String args[]) {
-		Computer c=new Computer("Test",new Date(1999,1,1),new Date(2000,1,1),1);
-		ComputerDao.getInstance().create(c);
+		//Computer c=new Computer("Test",new Date(1999,1,1),new Date(2000,1,1),1);
+		//ComputerDao.getInstance().create(c);
 	}
 	
 	

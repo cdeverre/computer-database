@@ -6,16 +6,20 @@ public class Computer {
 	
 	private int id;
 	private String name;
-	private Date date_introduced;
-	private Date date_discontinued;
-	private int compagny_id;
+	private Date dateIntroduced;
+	private Date dateDiscontinued;
+	private Company company;
 	
 	
-	public Computer(String _name, Date _date_introduced,Date _date_discontinued, int _compagny_id) {
+	public Computer() {
+		super();
+	}
+	
+	public Computer(String _name, Date _dateIntroduced,Date _dateDiscontinued, Company _compagny) {
 		this.name=_name;
-		this.date_introduced=_date_introduced;
-		this.date_discontinued=_date_discontinued;
-		this.compagny_id=_compagny_id; 
+		this.dateIntroduced=_dateIntroduced;
+		this.dateDiscontinued=_dateDiscontinued;
+		this.company=_compagny; 
 	}
 	
 	/**
@@ -49,43 +53,53 @@ public class Computer {
 	/**
 	 * @return the date_introduced
 	 */
-	public Date getDate_introduced() {
-		return date_introduced;
+	public Date getDateIntroduced() {
+		return dateIntroduced;
 	}
 	
 	/**
 	 * @param date_introduced the date_introduced to set
 	 */
-	public void setDate_introduced(Date date_introduced) {
-		this.date_introduced = date_introduced;
+	public void setDateIntroduced(Date date_introduced) {
+		this.dateIntroduced = date_introduced;
 	}
 	
 	/**
 	 * @return the date_discontinued
 	 */
-	public Date getDate_discontinued() {
-		return date_discontinued;
+	public Date getDateDiscontinued() {
+		return dateDiscontinued;
 	}
 	
 	/**
 	 * @param date_discontinued the date_discontinued to set
 	 */
-	public void setDate_discontinued(Date date_discontinued) {
-		this.date_discontinued = date_discontinued;
+	public void setDateDiscontinued(Date date_discontinued) {
+		this.dateDiscontinued = date_discontinued;
 	}
 	
 	/**
 	 * @return the compagny_id
 	 */
-	public int getCompagny_id() {
-		return compagny_id;
+	public Company getCompany() {
+		return company;
 	}
 	
 	/**
 	 * @param compagny_id the compagny_id to set
 	 */
-	public void setCompagny_id(int compagny_id) {
-		this.compagny_id = compagny_id;
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	
+	@Override
+	public String toString() {
+		return "Id="+id+" name="+name+" Introduced="+dateIntroduced+" Discontinued="+dateDiscontinued+" CompanyId="+company.getId();
+	}
+	
+	
+	public boolean equals(Computer _computer) {
+		return (this.getId()==_computer.getId());
 	}
 	
 	
