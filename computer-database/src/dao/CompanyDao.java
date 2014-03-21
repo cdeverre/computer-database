@@ -1,5 +1,7 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -8,70 +10,71 @@ import domainClasses.Company;
 public class CompanyDao {
 
 
-	private final static CompanyDao _instance = new CompanyDao(DaoConnection.getInstance());
-	
-	private Statement statement;
 
+	/* *******************************************************/
+	/* ***               Constructors                    *** */
+	/* *******************************************************/
 	
-	public CompanyDao(DaoConnection _connectionSingleton) {
+	protected CompanyDao() {
+		super();
+	}
+	
+		
+	/* *******************************************************/
+	/* ***               Methods                         *** */
+	/* *******************************************************/
+	
+	public void create(Company company) {
 		try {
-			this.setStatement(_connectionSingleton.getConnection().createStatement());
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			Statement stmt = connection.createStatement();
+			
+			String query = "INSERT INTO company SET id=null, name='"+company.getName()+"'";
+			stmt.executeUpdate(query,Statement.RETURN_GENERATED_KEYS);
+			rs=stmt.getGeneratedKeys();
+			if(rs.next()) {
+				company.setId(rs.getInt(1));
+			}
+			
+			DaoFactory.close(connection,rs,stmt);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-
-	/**
-	 * @return the Instance
-	 */
-	public static CompanyDao getInstance() {
-		return _instance;
-	}
-
-
-	/**
-	 * @return the statement
-	 */
-	public Statement getStatement() {
-		return statement;
-	}
-
-
-	/**
-	 * @param statement the statement to set
-	 */
-	public void setStatement(Statement statement) {
-		this.statement = statement;
-	}
-	
-	public void create(Company _company) {
+	public void update(Company company) {
 		try {
-			this.statement.executeQuery("INSERT INTO company SET id='"+_company.getId()+"', name='"+_company.getName()+"'");
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			Statement stmt = connection.createStatement();
+			
+			stmt.executeUpdate("UPDATE computer SET name='"+company.getName()+"' WHERE id='"+company.getId()+"'");
+			
+			DaoFactory.close(connection,rs,stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void update(Company _company) {
+	public void delete(Company company) {
 		try {
-			this.statement.executeQuery("UPDATE computer SET name='"+_company.getName()+"' WHERE id='"+_company.getId()+"'");
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			Statement stmt = connection.createStatement();
+			
+			stmt.executeQuery("DELETE FROM computer WHERE id='"+company.getId()+"'");
+			
+			DaoFactory.close(connection,rs,stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void delete(Company _company) {
+	/*public void find(Company company) {
 		try {
-			this.statement.executeQuery("DELETE FROM computer WHERE id='"+_company.getId()+"'");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/*public void find(Company _company) {
-		try {
-			this.statement.executeQuery("INSERT INTO computer SET id='"+_computer.getId()+"', name='"+_computer.getName()+"'");
+			this.statement.executeQuery("INSERT INTO computer SET id='"+computer.getId()+"', name='"+computer.getName()+"'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +12,7 @@
 <link href="css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
-	<header class="topbar">
+	<header class="navbar navbar-inverse navbar-static-top">
 		<h1 class="fill">
 			<a href="dashboard.jsp"> Application - Computer Database </a>
 		</h1>

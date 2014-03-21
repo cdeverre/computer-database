@@ -1,100 +1,126 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLXML;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
+import domainClasses.Company;
 import domainClasses.Computer;
 
 public class ComputerDao {
 
 		
 
-	private final static ComputerDao _instance = new ComputerDao(DaoConnection.getInstance());
 	
-	private Statement statement;
-
+	/* *******************************************************/
+	/* ***               Constructors                    *** */
+	/* *******************************************************/
 	
-	public ComputerDao(DaoConnection _connectionSingleton) {
+	protected ComputerDao() {
+		super();
+	}
+	
+	
+	/* *******************************************************/
+	/* ***               Methods                         *** */
+	/* *******************************************************/
+	
+	public void create(Computer computer) {
+		
 		try {
-			this.setStatement(_connectionSingleton.getConnection().createStatement());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-
-	/**
-	 * @return the Instance
-	 */
-	public static ComputerDao getInstance() {
-		return _instance;
-	}
-
-
-	/**
-	 * @return the statement
-	 */
-	public Statement getStatement() {
-		return statement;
-	}
-
-
-	/**
-	 * @param statement the statement to set
-	 */
-	public void setStatement(Statement statement) {
-		this.statement = statement;
-	}
-	
-	
-	
-	public void create(Computer _computer) {
-		try {
-			
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs;
+			Statement stmt = connection.createStatement();
+		
+			@SuppressWarnings("deprecation")
 			String query ="INSERT INTO computer SET id=null," +
-					" name='"+_computer.getName()+"', introduced='"+
-					_computer.getDateIntroduced().getYear()+"-"+_computer.getDateIntroduced().getMonth()+"-"+_computer.getDateIntroduced().getDay()+
-					"', discontinued="+_computer.getDateDiscontinued().getYear()+"-"+_computer.getDateDiscontinued().getMonth()+"-"+_computer.getDateDiscontinued().getDay()+
-					"', company_id='"+_computer.getCompany().getId()+"'";
-			this.statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			_computer.setId(this.statement.getGeneratedKeys().getInt(1));
+					" name='"+computer.getName()+"', introduced='"+
+					computer.getDateIntroduced().getYear()+"-"+computer.getDateIntroduced().getMonth()+"-"+computer.getDateIntroduced().getDay()+
+					"', discontinued='"+computer.getDateDiscontinued().getYear()+"-"+computer.getDateDiscontinued().getMonth()+"-"+computer.getDateDiscontinued().getDay()+
+					"', companyid='"+computer.getCompany().getId()+"'";
+			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+			rs=stmt.getGeneratedKeys();
+			if(rs.next()) {
+				computer.setId(rs.getInt(1));
+			}
+			
+			DaoFactory.close(connection, rs, stmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void update(Computer computer) {
+		try {
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			Statement stmt = connection.createStatement();
+			
+			String query=("UPDATE computer SET name='"+computer.getName()+"', introduced='"+computer.getDateIntroduced()+
+					"', discontinued='"+computer.getDateDiscontinued()+"', companyid='"+computer.getCompany()+"'"+"' WHERE id='"+computer.getId()+"'");
+			stmt.executeUpdate(query);
+			
+			DaoFactory.close(connection, rs, stmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void delete(Computer computer) {
+		try {
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			Statement stmt = connection.createStatement();
+					
+			stmt.executeUpdate("DELETE FROM computer WHERE id='"+computer.getId()+"'");
+			
+			DaoFactory.close(connection, rs, stmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<Computer> getAll() {
+		ArrayList<Computer> result = new ArrayList<Computer>();
+		try {
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			Statement stmt = connection.createStatement();
+			
+			String query = "SELECT * from company";
+			rs=stmt.executeQuery(query);
+			HashMap<Integer, String> companyTable = new HashMap<Integer,String>();
+			while(rs.next()){
+				companyTable.put(rs.getInt(1), rs.getString(2));
+			}
+			
+			query = "SELECT * from computer";
+			rs=stmt.executeQuery(query);
+			
+			while(rs.next()) {
+				int id=rs.getInt(1);
+				String name=rs.getString(2);
+				Date introduced=rs.getDate(3);
+				Date discontinued=rs.getDate(4);
+				int companyId = rs.getInt(5);
+				
+				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,companyTable.get(companyId)));
+				result.add(c);
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return result;
 	}
-	
-	public void update(Computer _computer) {
-		try {
-			String query=("UPDATE computer SET name='"+_computer.getName()+"', introduced='"+_computer.getDateIntroduced()+
-					"', discontinued="+_computer.getDateDiscontinued()+"', company_id='"+_computer.getCompany()+"'"+"' WHERE id='"+_computer.getId()+"'");
-			this.statement.executeUpdate(query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void delete(Computer _computer) {
-		try {
-			this.statement.executeUpdate("DELETE FROM computer WHERE id='"+_computer.getId()+"'");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/*public void find(Computer _computer) {
-		try {
-			this.statement.executeQuery("INSERT INTO computer SET id='"+_computer.getId()+"', name='"+_computer.getName()+"'");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}*/
 	
 	public static void main(String args[]) {
-		//Computer c=new Computer("Test",new Date(1999,1,1),new Date(2000,1,1),1);
-		//ComputerDao.getInstance().create(c);
+		System.out.println(DaoFactory.getComputerDao().getAll().toString());
+
 	}
 	
 	

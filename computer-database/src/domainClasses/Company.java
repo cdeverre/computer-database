@@ -9,10 +9,15 @@ public class Company {
 		super();
 	}
 	
-	public Company(String _name) {
-		this.name=_name;
+	
+	public Company(String name) {
+		this.name=name;
 	}
 	
+	public Company(int id,String name){
+		this.id=id;
+		this.name=name;
+	}
 	/**
 	 * @return the id
 	 */
@@ -46,11 +51,11 @@ public class Company {
 		return "Id="+id+" name="+name;
 	}
 	
-	
-	public boolean equals(Company _company) {
-		return (this.id==_company.getId());
+	@Override
+	public boolean equals(Object company) {
+		return (this.id==((Company) company).getId());
 	}
-	
+
 	
 	
 }
