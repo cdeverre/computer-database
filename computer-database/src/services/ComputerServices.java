@@ -33,8 +33,29 @@ public class ComputerServices {
 		DaoFactory.getComputerDao().delete(computer);
 	}
 	
+	public void delete(int id) {
+		DaoFactory.getComputerDao().delete(id);
+	}
+	
 	public ArrayList<Computer> getAll() {
 		return(DaoFactory.getComputerDao().getAll());
+	}
+	
+	public Computer find(int id) {
+		return (DaoFactory.getComputerDao().find(id));
+	}
+	public int count() {
+		return (DaoFactory.getComputerDao().count());
+	}
+
+
+	public ArrayList<Computer> getAllPagination(int offset) {
+		return (DaoFactory.getComputerDao().getAllPagination(offset));
+	}
+
+
+	public Object getNumberOfPage(int count) {
+		return DaoFactory.getComputerDao().getNumberOfPage(count);
 	}
 	
 }

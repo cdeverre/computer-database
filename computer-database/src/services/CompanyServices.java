@@ -1,5 +1,7 @@
 package services;
 
+import java.util.ArrayList;
+
 import dao.DaoFactory;
 import domainClasses.Company;
 
@@ -30,5 +32,13 @@ public class CompanyServices {
 	
 	public void delete(Company company) {
 		DaoFactory.getCompanyDao().delete(company);
+	}
+	
+	public ArrayList<Company> getAll() {
+		return(DaoFactory.getCompanyDao().getAll());
+	}
+	
+	public String getName(int id) {
+		return(DaoFactory.getCompanyDao().getName(id));
 	}
 }

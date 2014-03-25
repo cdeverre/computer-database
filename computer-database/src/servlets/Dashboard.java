@@ -24,7 +24,6 @@ public class Dashboard extends HttpServlet {
      */
     public Dashboard() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     
@@ -32,8 +31,17 @@ public class Dashboard extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Computer> computerList = ServiceFactory.getComputerServices().getAll();
+		int numberOfComputer =ServiceFactory.getComputerServices().count();
+		request.setAttribute("numberOfComputer", numberOfComputer);
+		
+		String pageNumberString=request.getParameter("pageNumber");
+		int pageNumber=0;
+		if(pageNumberString!=null) {
+			pageNumber=Integer.parseInt(pageNumberString);
+		}
+		ArrayList<Computer> computerList = ServiceFactory.getComputerServices().getAllPagination(pageNumber);
 		request.setAttribute("computerList", computerList);
+		request.setAttribute("numberOfPage", ServiceFactory.getComputerServices().getNumberOfPage(numberOfComputer) );
 		getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
 	}
 
@@ -41,7 +49,7 @@ public class Dashboard extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		this.doGet(request, response);
 	}
 
 }

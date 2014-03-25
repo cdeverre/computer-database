@@ -14,7 +14,11 @@ section#main {
     padding: 5em 2em;
     border-bottom: 1px solid #ccc;
     min-height: 600px;
-} 
+}
+
+#main h1 {
+	padding :10px;
+}
 
 section#main .topRight {
     position: absolute;
@@ -41,6 +45,7 @@ table.computers .header a {
 
 #actions {
     position: relative;
+    padding: 10px;
 }
 
 #actions #add {
@@ -70,4 +75,8 @@ table.computers .header a {
 }
 .col5 {
 	width: 30%;
+}
+
+.error {
+	color: #A94442;
 }

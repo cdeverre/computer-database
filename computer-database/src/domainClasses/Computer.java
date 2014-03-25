@@ -1,31 +1,31 @@
 package domainClasses;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Computer {
 	
 	private int id;
 	private String name;
-	private Date dateIntroduced;
-	private Date dateDiscontinued;
+	private Calendar DateIntroduced;
+	private Calendar DateDiscontinued;
 	private Company company;
 	
 	
 	public Computer() {
 		super();
 	}
-	public Computer(int id,String name, Date dateIntroduced,Date dateDiscontinued, Company compagny) {
+	public Computer(int id,String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
 		this.id=id;
 		this.name=name;
-		this.dateIntroduced=dateIntroduced;
-		this.dateDiscontinued=dateDiscontinued;
+		this.DateIntroduced=DateIntroduced;
+		this.DateDiscontinued=DateDiscontinued;
 		this.company=compagny; 
 	}
 	
-	public Computer(String name, Date dateIntroduced,Date dateDiscontinued, Company compagny) {
+	public Computer(String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
 		this.name=name;
-		this.dateIntroduced=dateIntroduced;
-		this.dateDiscontinued=dateDiscontinued;
+		this.DateIntroduced=DateIntroduced;
+		this.DateDiscontinued=DateDiscontinued;
 		this.company=compagny; 
 	}
 	
@@ -58,31 +58,31 @@ public class Computer {
 	}
 	
 	/**
-	 * @return the dateIntroduced
+	 * @return the DateIntroduced
 	 */
-	public Date getDateIntroduced() {
-		return dateIntroduced;
+	public Calendar getDateIntroduced() {
+		return DateIntroduced;
 	}
 	
 	/**
-	 * @param dateintroduced the dateIntroduced to set
+	 * @param Dateintroduced the DateIntroduced to set
 	 */
-	public void setDateIntroduced(Date dateintroduced) {
-		this.dateIntroduced = dateintroduced;
+	public void setDateIntroduced(Calendar Dateintroduced) {
+		this.DateIntroduced = Dateintroduced;
 	}
 	
 	/**
-	 * @return the dateDiscontinued
+	 * @return the DateDiscontinued
 	 */
-	public Date getDateDiscontinued() {
-		return dateDiscontinued;
+	public Calendar getDateDiscontinued() {
+		return DateDiscontinued;
 	}
 	
 	/**
-	 * @param datediscontinued the dateDiscontinued to set
+	 * @param Datediscontinued the DateDiscontinued to set
 	 */
-	public void setDateDiscontinued(Date datediscontinued) {
-		this.dateDiscontinued = datediscontinued;
+	public void setDateDiscontinued(Calendar Datediscontinued) {
+		this.DateDiscontinued = Datediscontinued;
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class Computer {
 	
 	@Override
 	public String toString() {
-		return " [ Id="+id+" name="+name+" Introduced="+dateIntroduced+" Discontinued="+dateDiscontinued+" CompanyId="+company.getId()+" ] ";
+		return " [ Id="+id+" name="+name+" Introduced="+DateIntroduced+" Discontinued="+DateDiscontinued+" CompanyId="+company.getId()+" ] ";
 	}
 	
 	@Override
