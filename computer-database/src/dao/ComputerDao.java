@@ -20,7 +20,7 @@ public class ComputerDao {
 		
     private static Logger logger = LoggerFactory.getLogger(ComputerDao.class);
     
-    private static final int LIMIT=20;
+    private static final int LIMIT=13;
 
 	
 	/* *******************************************************/
@@ -41,43 +41,54 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 		
-			String queryIntroduced;
+			StringBuilder queryIntroduced=new StringBuilder();
 			if (computer.getDateIntroduced()!=null) {
 				long introduced=computer.getDateIntroduced().getTimeInMillis()/1000;
-				queryIntroduced="FROM_UNIXTIME("+introduced+")";
+				queryIntroduced.append("FROM_UNIXTIME(");
+				queryIntroduced.append(introduced);
+				queryIntroduced.append(")");
 			} else {
-				queryIntroduced="null";
+				queryIntroduced.append("null");
 			}
 			
-			String queryDiscontinued;
+			StringBuilder queryDiscontinued=new StringBuilder();
 			if (computer.getDateDiscontinued()!=null) {
 				long discontinued = computer.getDateDiscontinued().getTimeInMillis()/1000;
-				queryDiscontinued="FROM_UNIXTIME("+discontinued+")";
+				queryDiscontinued.append("FROM_UNIXTIME(");
+				queryDiscontinued.append(discontinued);
+				queryDiscontinued.append(")");
 			} else {
-				queryDiscontinued="null";
+				queryDiscontinued.append("null");
 			}
 			
-			String queryCompagny;
+			StringBuilder queryCompagny=new StringBuilder();
 			if (computer.getCompany()!=null) {
-				queryCompagny="'"+computer.getCompany().getId()+"'";
+				queryCompagny.append("'");
+				queryCompagny.append(computer.getCompany().getId());
+				queryCompagny.append("'");
 			} else{
-				queryCompagny="null";
+				queryCompagny.append("null");
 			}
-			String query ="INSERT INTO computer SET id=null," +
-					" name='"+computer.getName()+"', introduced="+queryIntroduced+
-					", discontinued="+queryDiscontinued+
-					", company_id="+queryCompagny;
+			StringBuilder query =new StringBuilder();
+			query.append("INSERT INTO computer SET id=null, name='");
+			query.append(computer.getName());
+			query.append("', introduced=");
+			query.append(queryIntroduced);
+			query.append(", discontinued=");
+			query.append(queryDiscontinued);
+			query.append(", company_id=");
+			query.append(queryCompagny);
 			
 			
 			logger.info("Sending query to create a computer :\n " + query );
-			stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-			logger.debug("Query sended succesfully");
+			stmt.executeUpdate(query.toString(), Statement.RETURN_GENERATED_KEYS);
+			logger.info("Query sended succesfully");
 			
-			logger.debug("Getting the generated keys");
+			logger.info("Getting the generated keys");
 			rs=stmt.getGeneratedKeys();
 			if(rs.next()) {
 				computer.setId(rs.getInt(1));
@@ -93,20 +104,55 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 			
-			long introduced=computer.getDateIntroduced().getTimeInMillis()/1000;
-			long discontinued = computer.getDateDiscontinued().getTimeInMillis()/1000;
+			StringBuilder queryIntroduced=new StringBuilder();
+			if (computer.getDateIntroduced()!=null) {
+				long introduced=computer.getDateIntroduced().getTimeInMillis()/1000;
+				queryIntroduced.append("FROM_UNIXTIME(");
+				queryIntroduced.append(introduced);
+				queryIntroduced.append(")");
+			} else {
+				queryIntroduced.append("null");
+			}
 			
-			String query=("UPDATE computer SET name='"+computer.getName()+"', introduced=FROM_UNIXTIME("+
-					introduced+"), discontinued=FROM_UNIXTIME("+discontinued+
-					"), company_id='"+computer.getCompany().getId()+"' WHERE id='"+computer.getId()+"'");
+			StringBuilder queryDiscontinued=new StringBuilder();
+			if (computer.getDateDiscontinued()!=null) {
+				long discontinued = computer.getDateDiscontinued().getTimeInMillis()/1000;
+				queryDiscontinued.append("FROM_UNIXTIME(");
+				queryDiscontinued.append(discontinued);
+				queryDiscontinued.append(")");
+			} else {
+				queryDiscontinued.append("null");
+			}
 			
-			logger.debug("Sending query to update a computer :\n " + query );
-			stmt.executeUpdate(query);
-			logger.debug("Query sended succesfully");
+			StringBuilder queryCompagny=new StringBuilder();
+			if (computer.getCompany()!=null) {
+				queryCompagny.append("'");
+				queryCompagny.append(computer.getCompany().getId());
+				queryCompagny.append("'");
+			} else{
+				queryCompagny.append("null");
+			}
+			
+			StringBuilder query=new StringBuilder();
+			query.append("UPDATE computer SET name='");
+			query.append(computer.getName());
+			query.append("', introduced=");
+			query.append(queryIntroduced);
+			query.append(", discontinued=");
+			query.append(queryDiscontinued);
+			query.append(", company_id=");
+			query.append(queryCompagny);
+			query.append(" WHERE id='");
+			query.append(computer.getId());
+			query.append("'");
+			
+			logger.info("Sending query to update a computer :\n " + query );
+			stmt.executeUpdate(query.toString());
+			logger.info("Query sended succesfully");
 			
 			DaoFactory.close(connection, rs, stmt);
 		} catch (SQLException e) {
@@ -118,15 +164,18 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 					
-			String query = "DELETE FROM computer WHERE id='"+computer.getId()+"'";
+			StringBuilder query =new StringBuilder();
+			query.append("DELETE FROM computer WHERE id='");
+			query.append(computer.getId());
+			query.append("'");
 			
-			logger.debug("Sending query to delete a computer :\n " + query );
-			stmt.executeUpdate(query);
-			logger.debug("Query sended succesfully");
+			logger.info("Sending query to delete a computer :\n " + query );
+			stmt.executeUpdate(query.toString());
+			logger.info("Query sended succesfully");
 			
 			DaoFactory.close(connection, rs, stmt);
 		} catch (SQLException e) {
@@ -139,15 +188,18 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 					
-			String query = "DELETE FROM computer WHERE id='"+id+"'";
+			StringBuilder query = new StringBuilder();
+			query.append("DELETE FROM computer WHERE id='");
+			query.append(id);
+			query.append("'");
 			
-			logger.debug("Sending query to delete a computer :\n " + query );
-			stmt.executeUpdate(query);
-			logger.debug("Query sended succesfully");
+			logger.info("Sending query to delete a computer :\n " + query );
+			stmt.executeUpdate(query.toString());
+			logger.info("Query sended succesfully");
 			
 			DaoFactory.close(connection, rs, stmt);
 		} catch (SQLException e) {
@@ -156,82 +208,42 @@ public class ComputerDao {
 	}
 	
 	
-	public ArrayList<Computer> getAll() {
-		ArrayList<Computer> result = new ArrayList<Computer>();
-		try {
-			Connection connection = DaoFactory.getConnection();
-			ResultSet rs=null;
-			logger.debug("Creating a statement");
-			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query = "SELECT * from company";
-			
-			logger.debug("Sending query to list all the company");
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			
-			HashMap<Integer, String> companyTable = new HashMap<Integer,String>();
-			while(rs.next()){
-				companyTable.put(rs.getInt(1), rs.getString(2));
-			}
-			
-			query = "SELECT * from computer";
-			
-			logger.debug("Sending query to list all the computers :\n " + query );
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			
-			while(rs.next()) {
-				int id=rs.getInt(1);
-				String name=rs.getString(2);
-				Calendar introduced=null;
-				if(rs.getDate(3)!=null) {
-					introduced=new GregorianCalendar();
-					introduced.setTime(rs.getDate(3));
-				}
-				Calendar discontinued=null;
-				if(rs.getDate(4)!=null) {
-					discontinued=new GregorianCalendar();
-					discontinued.setTime(rs.getDate(4));
-				}
-				int companyId = rs.getInt(5);
-				
-				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,companyTable.get(companyId)));
-				result.add(c);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
 	
-	public ArrayList<Computer> getAllPagination(int offset) {
+	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
 		ArrayList<Computer> result = new ArrayList<Computer>();
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 			
-			String query = "SELECT * from company ";
+			StringBuilder query = new StringBuilder();
 			
-			logger.debug("Sending query to list all the company");
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
+			logger.info("Sending query to list all the company");
+			rs=stmt.executeQuery("SELECT * from company ");
+			logger.info("Query sended succesfully");
 			
 			HashMap<Integer, String> companyTable = new HashMap<Integer,String>();
 			while(rs.next()){
 				companyTable.put(rs.getInt(1), rs.getString(2));
 			}
 			
-			query = "SELECT * from computer LIMIT"+ComputerDao.LIMIT+" OFFSET "+Integer.toString(offset*ComputerDao.LIMIT);
+			query.append("SELECT * from computer ORDER BY ");
+			query.append(orderByColumns);
+			if(orderByType) {
+				query.append(" ASC");
+			} else {
+				query.append(" DESC");
+			}
+			query.append(" LIMIT ");
+			query.append(ComputerDao.LIMIT);
+			query.append(" OFFSET ");
+			query.append(Integer.toString((currentPage-1)*ComputerDao.LIMIT));
 			
-			logger.debug("Sending query to list all the computers :\n " + query );
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
+			logger.info("Sending query to list all the computers :\n " + query );
+			rs=stmt.executeQuery(query.toString());
+			logger.info("Query sended succesfully");
 			
 			while(rs.next()) {
 				int id=rs.getInt(1);
@@ -263,15 +275,44 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 			
 			String query = "SELECT COUNT(*) from computer ";
 			
-			logger.debug("Sending query to count all the computer :\n " + query);
+			logger.info("Sending query to count all the computer :\n " + query);
 			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
+			logger.info("Query sended succesfully");
+			
+			if (rs.next()) {
+				res=rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	public int count(String pattern) {
+		int res = 0;
+		try {
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			logger.info("Creating a statement");
+			Statement stmt = connection.createStatement();
+			logger.info("Statement created");
+			
+			StringBuilder query = new StringBuilder();
+			query.append("SELECT COUNT(*) from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like '%");
+			query.append(pattern);
+			query.append("%' or cy.name like '%");
+			query.append(pattern);
+			query.append("%' ");
+			
+			logger.info("Sending query to count all the computer :\n " + query);
+			rs=stmt.executeQuery(query.toString());
+			logger.info("Query sended succesfully");
 			
 			if (rs.next()) {
 				res=rs.getInt(1);
@@ -287,24 +328,29 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.debug("Creating a statement");
+			logger.info("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
+			logger.info("Statement created");
 			
-			String query = "SELECT * from computer where id='"+id+"'";
+			StringBuilder query = new StringBuilder();
+			query.append("SELECT * from computer where id='");
+			query.append(id);
+			query.append("'");
 			
-			logger.debug("Sending query to list all the company :\n " + query );
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
+			logger.info("Sending query to list all the company :\n " + query );
+			rs=stmt.executeQuery(query.toString());
+			logger.info("Query sended succesfully");
 			
 			if(rs.next()) {
 				String name=rs.getString(2);
-				Calendar introduced=new GregorianCalendar();
+				Calendar introduced=null;
 				if(rs.getDate(3)!=null) {
+					introduced=new GregorianCalendar();
 					introduced.setTime(rs.getDate(3));
 				}
-				Calendar discontinued=new GregorianCalendar();
+				Calendar discontinued=null;
 				if(rs.getDate(4)!=null) {
+					discontinued=new GregorianCalendar();
 					discontinued.setTime(rs.getDate(4));
 				}
 				int companyId = rs.getInt(5);
@@ -326,6 +372,64 @@ public class ComputerDao {
 		return (int)Math.ceil((double)count/(double)ComputerDao.LIMIT);
 	}
 	
+	
+	public ArrayList<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType) {
+		ArrayList<Computer> result = new ArrayList<Computer>();
+		try {
+			Connection connection = DaoFactory.getConnection();
+			ResultSet rs=null;
+			logger.info("Creating a statement");
+			Statement stmt = connection.createStatement();
+			logger.info("Statement created");
+			
+			StringBuilder query = new StringBuilder();
+			query.append("SELECT * from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like '%");
+			query.append(pattern);
+			query.append("%' or cy.name like '%");
+			query.append(pattern);
+			query.append("%' ORDER BY cr.");
+			query.append(orderByColumns);
+			if(orderByType) {
+				query.append(" ASC");
+			} else {
+				query.append(" DESC");
+			}
+			query.append(" LIMIT ");
+			query.append(ComputerDao.LIMIT);
+			query.append(" OFFSET ");
+			query.append(Integer.toString((currentPage-1)*ComputerDao.LIMIT));
+			
+			logger.info("Sending query to search for computer : \n"+query);
+			rs=stmt.executeQuery(query.toString());
+			logger.info("Query sended succesfully");
+			
+			
+			while(rs.next()) {
+				int id=rs.getInt(1);
+				String name=rs.getString(2);
+				Calendar introduced=null;
+				if(rs.getDate(3)!=null) {
+					introduced=new GregorianCalendar();
+					introduced.setTime(rs.getDate(3));
+				}
+				Calendar discontinued=null;
+				if(rs.getDate(4)!=null) {
+					discontinued=new GregorianCalendar();
+					discontinued.setTime(rs.getDate(4));
+				}
+				int companyId = rs.getInt(5);
+				
+				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,rs.getString(7)));
+				result.add(c);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+		
+	}
+	
 	public static void main(String args[]) {
 		
 		System.out.println(Math.ceil(((double)5/(double)2)));
@@ -343,6 +447,9 @@ public class ComputerDao {
 //		ServiceFactory.getComputerServices().create(c);*/
 
 	}
+
+
+	
 
 
 	

@@ -11,8 +11,14 @@ public class Tools {
 	}
 	
 	public static String createStringFromCalendar(Calendar calendar) {
-		return(Integer.toString(calendar.get(Calendar.MONTH)+1)+"/"+
-				Integer.toString(calendar.get(Calendar.DAY_OF_MONTH))+"/"+
-				Integer.toString(calendar.get(Calendar.YEAR)));
+		String res;
+		if (calendar==null) {
+			res="";
+		} else {
+			res=Integer.toString(calendar.get(Calendar.MONTH)+1)+"/"+
+					Integer.toString(calendar.get(Calendar.DAY_OF_MONTH))+"/"+
+					Integer.toString(calendar.get(Calendar.YEAR));
+		}
+		return(res);
 	}
 }

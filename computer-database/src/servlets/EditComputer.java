@@ -59,15 +59,29 @@ public class EditComputer extends HttpServlet {
 		String name =request.getParameter("name");
 		
 		Calendar dateIntroduced = new GregorianCalendar();
-		Tools.setCalendar(dateIntroduced, request.getParameter("introduced"));
+		String introduced=request.getParameter("introduced");
+		if (introduced!=null && !introduced.equals("")) {
+			Tools.setCalendar(dateIntroduced, introduced);
+		} else {
+			dateIntroduced=null;
+		}
 		
 		Calendar dateDiscontinued = new GregorianCalendar();
-		Tools.setCalendar(dateDiscontinued, request.getParameter("discontinued"));
+		String discontinued=request.getParameter("discontinued");
+		if(discontinued!=null&& !discontinued.equals("")) {
+			Tools.setCalendar(dateDiscontinued, discontinued);
+		} else {
+			dateDiscontinued=null;
+		}
+				
+		String idString =request.getParameter("company");
+		Company company=null;
+		if(idString!=null && ! idString.equals("null")) {
+			int companyId=Integer.parseInt(idString);
+			String companyName=ServiceFactory.getCompanyServices().getName(companyId);
 		
-		int companyId=Integer.parseInt(request.getParameter("company"));
-		String companyName=ServiceFactory.getCompanyServices().getName(companyId);
-		
-		Company company = new Company(companyId,companyName);
+			company = new Company(companyId,companyName);
+		} 
 		
 		
 		Computer computer=new Computer(Integer.parseInt(id),name,dateIntroduced,dateDiscontinued,company);

@@ -11,6 +11,7 @@
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 
 <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.min.css">
 <script src="js/jquery-1.10.2.js"></script>
