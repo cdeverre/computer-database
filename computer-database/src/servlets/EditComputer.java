@@ -56,12 +56,18 @@ public class EditComputer extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id=request.getParameter("id");
+		boolean error=false;
 		String name =request.getParameter("name");
-		
+		if (name==null || name.equals("")) {
+			error=true;
+		}		
 		Calendar dateIntroduced = new GregorianCalendar();
 		String introduced=request.getParameter("introduced");
 		if (introduced!=null && !introduced.equals("")) {
-			Tools.setCalendar(dateIntroduced, introduced);
+			error=!(Tools.validDate(introduced));
+			if(!error) {
+				Tools.setCalendar(dateIntroduced, introduced);
+			}
 		} else {
 			dateIntroduced=null;
 		}
@@ -69,8 +75,10 @@ public class EditComputer extends HttpServlet {
 		Calendar dateDiscontinued = new GregorianCalendar();
 		String discontinued=request.getParameter("discontinued");
 		if(discontinued!=null&& !discontinued.equals("")) {
-			Tools.setCalendar(dateDiscontinued, discontinued);
-		} else {
+			error=!(Tools.validDate(discontinued));
+			if(!error) {
+				Tools.setCalendar(dateDiscontinued, discontinued);
+			}		} else {
 			dateDiscontinued=null;
 		}
 				
@@ -86,9 +94,14 @@ public class EditComputer extends HttpServlet {
 		
 		Computer computer=new Computer(Integer.parseInt(id),name,dateIntroduced,dateDiscontinued,company);
 		
-		ServiceFactory.getComputerServices().update(computer);
-		
-		response.sendRedirect("/computer-database/Dashboard");
+		if (!error) {
+
+			ServiceFactory.getComputerServices().update(computer);
+			
+			response.sendRedirect("/computer-database/Dashboard");
+		} else {
+			response.sendRedirect("/computer-database/AddComputer");
+		}
 	}
 
 }

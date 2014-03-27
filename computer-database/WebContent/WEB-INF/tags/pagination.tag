@@ -1,9 +1,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
 
-<%@ attribute name="numberOfPage" required="true" %>
-<%@ attribute name="currentPage" required="true" %>
-<%@ attribute name="pattern" required="true" %>
+
 
 
 <ul class="pagination " >
@@ -29,5 +27,7 @@
 			</c:if>
 		><a href="Dashboard?currentPage=${currentPage +1}&pattern=${pattern}&
 			orderByColumns=${orderByColumns}&orderByType=${orderByType}">&raquo;</a></li>
+			
+			
 </ul>
 

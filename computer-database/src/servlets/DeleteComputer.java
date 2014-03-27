@@ -29,7 +29,9 @@ public class DeleteComputer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int id=Integer.parseInt(request.getParameter("id"));
 		ServiceFactory.getComputerServices().delete(id);
-		response.sendRedirect("/computer-database/Dashboard");
+		
+				
+		getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
 	}
 
 	/**

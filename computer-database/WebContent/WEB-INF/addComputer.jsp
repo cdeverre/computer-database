@@ -11,7 +11,6 @@
 	<h1 >Add Computer</h1>
 	
 	<form action="AddComputer" method="POST" class ="form-validation form-horizontal">
-		<fieldset>
 			<div class="form-group">
 				<label for="name" class="control-label col-sm-2">Computer name:</label>
 				<div class="col-xs-2">
@@ -44,7 +43,6 @@
 					</select>
 				</div>
 			</div>
-		</fieldset>
 	
 		
 		<div class="form-group control-label col-xs-4">

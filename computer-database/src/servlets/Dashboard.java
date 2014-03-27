@@ -48,13 +48,13 @@ public class Dashboard extends HttpServlet {
 		
 		boolean orderByType=true;
 		String orderByTypeString=request.getParameter("orderByType");
-		if (orderByTypeString!=null && orderByTypeString.equals("DESC")){
-			orderByType=false;
+		if (orderByTypeString!=null ){
+			orderByType=Boolean.parseBoolean(orderByTypeString);
 		}
 		
 		
 		String pattern=request.getParameter("pattern");
-		request.setAttribute("pattern", pattern);
+		
 		int numberOfPage=1;
 		if(pattern!=null && !pattern.equals("")) {
 			numberOfComputer=ServiceFactory.getComputerServices().count(pattern);
@@ -68,11 +68,18 @@ public class Dashboard extends HttpServlet {
 			computerList = ServiceFactory.getComputerServices().getAllPagination(currentPage,orderByColumns,orderByType);
 		}
 		
+//		UrlParameters urlParameters=new UrlParameters(currentPage,numberOfPage,orderByColumns,orderByType,pattern);
+		
+//		request.setAttribute("urlParameters", urlParameters);
+		
+		request.setAttribute("pattern", pattern);
 		request.setAttribute("currentPage", currentPage);
-		request.setAttribute("numberOfComputer", numberOfComputer);
-		request.setAttribute("computerList", computerList);
 		request.setAttribute("numberOfPage", numberOfPage );
 		request.setAttribute("orderByColumns", orderByColumns);
+		request.setAttribute("orderByType", orderByType);
+		
+		request.setAttribute("numberOfComputer", numberOfComputer);
+		request.setAttribute("computerList", computerList);
 		getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
 	}
 

@@ -11,7 +11,6 @@
 	<h1>Edit Computer</h1>
 	
 	<form action="EditComputer" method="POST" class ="form-horizontal">
-		<fieldset>
 			<input name="id" type="HIDDEN" value="${id}" />
 		
 			<div class="form-group">
@@ -53,7 +52,6 @@
 					</select>
 				</div>
 			</div>
-		</fieldset>
 		<div class="form-group control-label col-xs-4">
 			<input type="submit" value="Edit" class="btn btn-success">
 			or <a href="Dashboard" class="btn btn-danger">Cancel</a>

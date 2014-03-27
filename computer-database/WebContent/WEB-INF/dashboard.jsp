@@ -9,11 +9,11 @@
 <section id="main">
 	<h1 id="homeTitle">${numberOfComputer} Computers found</h1>
 	<div id="actions">
-		<form action="" method="GET">
+		<form action="Dashboard" method="GET">
 			<input type="search" id="searchbox" name="pattern" value="${pattern}" placeholder="Search name">
 			<input id="searchsubmit" value="Filter by name" class="btn btn-primary" type="submit">
 		</form>
-		<a class="btn btn-success" id="add" href="AddComputer">Add Computer</a>
+		<customTag:link path="AddComputer" text='<span class="glyphicon glyphicon-plus"></span> AddComputer' preference='class="btn btn-success" id="add"'></customTag:link>
 	</div>
 
 	<div class="row">
@@ -23,38 +23,35 @@
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
 					<th class="col-md-5">Computer Name  
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=name&orderByType=ASC">
-							<span class="glyphicon glyphicon-chevron-up"></span>
-						</a>
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=name&orderByType=DESC">
-							<span class="glyphicon glyphicon-chevron-down"></span>
-						</a>
-					</th class="col-md-2">
-					<th>Introduced Date  
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=introduced&orderByType=ASC">
-							<span class="glyphicon glyphicon-chevron-up"></span>
-						</a>
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=introduced&orderByType=DESC">
-							<span class="glyphicon glyphicon-chevron-down"></span>
-						</a>
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
+							 orderByColumns="name" orderByType="true"></customTag:link>
+							 
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
+							 orderByColumns="name" orderByType="false"></customTag:link>
+						
+					</th >
+					<th class="col-md-2">Introduced Date  
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
+							 orderByColumns="introduced" orderByType="true"></customTag:link>
+							 
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
+							 orderByColumns="introduced" orderByType="false"></customTag:link>
 					</th>
 					<!-- Table header for Discontinued Date -->
 					<th class="col-md-2">Discontinued Date  
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=discontinued&orderByType=ASC">
-							<span class="glyphicon glyphicon-chevron-up"></span>
-						</a>
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=discontinued&orderByType=DESC">
-							<span class="glyphicon glyphicon-chevron-down"></span>
-						</a>
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
+							 orderByColumns="discontinued" orderByType="true"></customTag:link>
+							 
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
+							 orderByColumns="discontinued" orderByType="false"></customTag:link>
 					</th>
 					<!-- Table header for Company -->
 					<th class="col-md-2">Company  
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=company_id&orderByType=ASC">
-							<span class="glyphicon glyphicon-chevron-up"></span>
-						</a>
-						<a href="Dashboard?currentPage=${currentPage}&pattern=${pattern}&orderByColumns=company_id&orderByType=DESC">
-							<span class="glyphicon glyphicon-chevron-down"></span>
-						</a>
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
+							 orderByColumns="company_id" orderByType="true"></customTag:link>
+							 
+						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
+							 orderByColumns="company_id" orderByType="false"></customTag:link>
 					</th>
 					<th class="col-md-1">Delete</th>
 				</tr>
@@ -64,11 +61,14 @@
 			
 				<c:forEach var="computer" items="${computerList}" >
 					<tr>
-						<td><a href="EditComputer?id=${computer.id }" onclick="">${computer.name}</a></td>
+						<td><customTag:link path="EditComputer" otherParameters="id=${computer.id }" text="${computer.name }">
+						</customTag:link></td>
 						<td><fmt:formatDate type="date" value="${computer.dateIntroduced.getTime()}" /></td>
 						<td><fmt:formatDate type="date" value="${computer.dateDiscontinued.getTime()}" /></td>
 						<td>${computer.company.name}</td>
-						<td><a class="btn btn-danger" id="delete" href="DeleteComputer?id=${computer.id }">Delete</a></td>
+						<td><customTag:link path="DeleteComputer" otherParameters="id=${computer.id }" 
+						text='<span class="glyphicon glyphicon-trash"></span> Delete'
+						preference='class="btn btn-danger" id="delete"'></customTag:link></td>
 					</tr>
 				</c:forEach>
 
@@ -76,7 +76,7 @@
 		</table>
 		</div>
 		
-		<customTag:pagination currentPage ="${currentPage}" numberOfPage="${numberOfPage}" pattern="${pattern }"> </customTag:pagination>
+		<customTag:pagination> </customTag:pagination>
 		
 </section>
 

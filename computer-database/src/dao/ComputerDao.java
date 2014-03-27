@@ -12,6 +12,8 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import tools.Tools;
+
 import domainClasses.Company;
 import domainClasses.Computer;
 
@@ -41,9 +43,9 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 		
 			StringBuilder queryIntroduced=new StringBuilder();
 			if (computer.getDateIntroduced()!=null) {
@@ -84,11 +86,11 @@ public class ComputerDao {
 			query.append(queryCompagny);
 			
 			
-			logger.info("Sending query to create a computer :\n " + query );
+			logger.debug("Sending query to create a computer :\n " + query );
 			stmt.executeUpdate(query.toString(), Statement.RETURN_GENERATED_KEYS);
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
-			logger.info("Getting the generated keys");
+			logger.debug("Getting the generated keys");
 			rs=stmt.getGeneratedKeys();
 			if(rs.next()) {
 				computer.setId(rs.getInt(1));
@@ -104,9 +106,9 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 			
 			StringBuilder queryIntroduced=new StringBuilder();
 			if (computer.getDateIntroduced()!=null) {
@@ -150,9 +152,9 @@ public class ComputerDao {
 			query.append(computer.getId());
 			query.append("'");
 			
-			logger.info("Sending query to update a computer :\n " + query );
+			logger.debug("Sending query to update a computer :\n " + query );
 			stmt.executeUpdate(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			DaoFactory.close(connection, rs, stmt);
 		} catch (SQLException e) {
@@ -164,18 +166,18 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 					
 			StringBuilder query =new StringBuilder();
 			query.append("DELETE FROM computer WHERE id='");
 			query.append(computer.getId());
 			query.append("'");
 			
-			logger.info("Sending query to delete a computer :\n " + query );
+			logger.debug("Sending query to delete a computer :\n " + query );
 			stmt.executeUpdate(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			DaoFactory.close(connection, rs, stmt);
 		} catch (SQLException e) {
@@ -188,18 +190,18 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 					
 			StringBuilder query = new StringBuilder();
 			query.append("DELETE FROM computer WHERE id='");
 			query.append(id);
 			query.append("'");
 			
-			logger.info("Sending query to delete a computer :\n " + query );
+			logger.debug("Sending query to delete a computer :\n " + query );
 			stmt.executeUpdate(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			DaoFactory.close(connection, rs, stmt);
 		} catch (SQLException e) {
@@ -214,15 +216,15 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 			
 			StringBuilder query = new StringBuilder();
 			
-			logger.info("Sending query to list all the company");
+			logger.debug("Sending query to list all the company");
 			rs=stmt.executeQuery("SELECT * from company ");
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			HashMap<Integer, String> companyTable = new HashMap<Integer,String>();
 			while(rs.next()){
@@ -241,9 +243,9 @@ public class ComputerDao {
 			query.append(" OFFSET ");
 			query.append(Integer.toString((currentPage-1)*ComputerDao.LIMIT));
 			
-			logger.info("Sending query to list all the computers :\n " + query );
+			logger.debug("Sending query to list all the computers :\n " + query );
 			rs=stmt.executeQuery(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			while(rs.next()) {
 				int id=rs.getInt(1);
@@ -275,15 +277,15 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 			
 			String query = "SELECT COUNT(*) from computer ";
 			
-			logger.info("Sending query to count all the computer :\n " + query);
+			logger.debug("Sending query to count all the computer :\n " + query);
 			rs=stmt.executeQuery(query);
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			if (rs.next()) {
 				res=rs.getInt(1);
@@ -299,9 +301,9 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 			
 			StringBuilder query = new StringBuilder();
 			query.append("SELECT COUNT(*) from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like '%");
@@ -310,9 +312,9 @@ public class ComputerDao {
 			query.append(pattern);
 			query.append("%' ");
 			
-			logger.info("Sending query to count all the computer :\n " + query);
+			logger.debug("Sending query to count all the computer :\n " + query);
 			rs=stmt.executeQuery(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			if (rs.next()) {
 				res=rs.getInt(1);
@@ -328,18 +330,18 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 			
 			StringBuilder query = new StringBuilder();
 			query.append("SELECT * from computer where id='");
 			query.append(id);
 			query.append("'");
 			
-			logger.info("Sending query to list all the company :\n " + query );
+			logger.debug("Sending query to list all the company :\n " + query );
 			rs=stmt.executeQuery(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			if(rs.next()) {
 				String name=rs.getString(2);
@@ -378,9 +380,9 @@ public class ComputerDao {
 		try {
 			Connection connection = DaoFactory.getConnection();
 			ResultSet rs=null;
-			logger.info("Creating a statement");
+			logger.debug("Creating a statement");
 			Statement stmt = connection.createStatement();
-			logger.info("Statement created");
+			logger.debug("Statement created");
 			
 			StringBuilder query = new StringBuilder();
 			query.append("SELECT * from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like '%");
@@ -399,9 +401,9 @@ public class ComputerDao {
 			query.append(" OFFSET ");
 			query.append(Integer.toString((currentPage-1)*ComputerDao.LIMIT));
 			
-			logger.info("Sending query to search for computer : \n"+query);
+			logger.debug("Sending query to search for computer : \n"+query);
 			rs=stmt.executeQuery(query.toString());
-			logger.info("Query sended succesfully");
+			logger.debug("Query sended succesfully");
 			
 			
 			while(rs.next()) {
@@ -432,8 +434,8 @@ public class ComputerDao {
 	
 	public static void main(String args[]) {
 		
-		System.out.println(Math.ceil(((double)5/(double)2)));
-		System.out.println(Math.ceil(5.2));
+		System.out.println(Tools.validDate("02/28/2014"));
+
 //		System.out.println(ServiceFactory.getCompanyServices().getName(1));
 //		Calendar c1=new GregorianCalendar();
 //		c1.set(1999,02,5);

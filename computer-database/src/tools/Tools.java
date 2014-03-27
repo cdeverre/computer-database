@@ -1,5 +1,7 @@
 package tools;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class Tools {
@@ -21,4 +23,17 @@ public class Tools {
 		}
 		return(res);
 	}
+
+	public static boolean validDate(String date) {
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		format.setLenient(false);
+		try {
+	          format.parse(date);
+	          return true;
+	     }
+	     catch(ParseException e){
+	          return false;
+	     }
+	}
+	
 }
