@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.Company;
+import model.Computer;
+
 import services.ServiceFactory;
 import tools.Tools;
-import domainClasses.Company;
-import domainClasses.Computer;
 
 /**
  * Servlet implementation class AddComputer
@@ -46,13 +47,13 @@ public class AddComputer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		boolean error=false;
 		String name =request.getParameter("name");
-		if (name==null || name.equals("")) {
+		if (name==null || "".equals(name)) {
 			error=true;
 		}
 		
 		Calendar dateIntroduced = new GregorianCalendar();
 		String introduced=request.getParameter("introduced");
-		if (introduced!=null && !introduced.equals("")) {
+		if (introduced!=null && !"".equals(introduced)) {
 			error=!(Tools.validDate(introduced));
 			if(!error) {
 				Tools.setCalendar(dateIntroduced, introduced);
@@ -63,7 +64,7 @@ public class AddComputer extends HttpServlet {
 		
 		Calendar dateDiscontinued = new GregorianCalendar();
 		String discontinued=request.getParameter("discontinued");
-		if(discontinued!=null&& !discontinued.equals("")) {
+		if(discontinued!=null&& !"".equals(discontinued)) {
 			error=!(Tools.validDate(discontinued));
 			if(!error) {
 				Tools.setCalendar(dateDiscontinued, discontinued);
@@ -74,7 +75,7 @@ public class AddComputer extends HttpServlet {
 				
 		String idString =request.getParameter("company");
 		Company company=null;
-		if(idString!=null && ! idString.equals("null")) {
+		if(idString!=null && !"null".equals(idString)) {
 			try {
 				int id=Integer.parseInt(idString);
 				String companyName=ServiceFactory.getCompanyServices().getName(id);

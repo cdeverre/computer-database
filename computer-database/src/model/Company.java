@@ -1,4 +1,4 @@
-package domainClasses;
+package model;
 
 public class Company {
 

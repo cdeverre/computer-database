@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.Company;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import domainClasses.Company;
 
 public class CompanyDao {
 
@@ -29,12 +30,80 @@ public class CompanyDao {
 	/* ***               Methods                         *** */
 	/* *******************************************************/
 	
-	public void create(Company company) {
+	
+	
+	public ArrayList<Company> getAll() {
+		ArrayList<Company> result = new ArrayList<Company>();
+		Connection connection = DaoFactory.getConnection();
+		ResultSet rs=null;
+		Statement stmt=null;
 		try {
-			Connection connection = DaoFactory.getConnection();
-			ResultSet rs=null;
 			logger.debug("Creating a statement");
-			Statement stmt = connection.createStatement();
+			stmt = connection.createStatement();
+			logger.debug("Statement created");
+			
+			String query = "SELECT * from company";
+			
+			logger.debug("Sending query to list all the computers :\n"+query);
+			rs=stmt.executeQuery(query);
+			logger.debug("Query sended succesfully");
+			
+						
+			while(rs.next()) {
+				int id=rs.getInt(1);
+				String name=rs.getString(2);
+				Company c=new Company(id,name);
+				result.add(c);
+			}
+			
+		} catch (SQLException e) {
+			logger.error("SQL error when getting the list of company");
+			e.printStackTrace();
+		} finally {
+			DaoFactory.close(rs,stmt);
+			DaoFactory.closeConnection();
+		}
+		return result;
+	}
+	
+	public String getName(int id) {
+		String res=null;
+		Connection connection = DaoFactory.getConnection();
+		ResultSet rs=null;
+		Statement stmt=null;
+		try{
+			logger.debug("Creating a statement");
+			stmt = connection.createStatement();
+			logger.debug("Statement created");
+			
+			String query = "SELECT cr.name from company cr where id='"+id+"'";
+			
+			logger.debug("Sending query to list all the computers :\n"+query);
+			rs=stmt.executeQuery(query);
+			logger.debug("Query sended succesfully");
+			if(rs.next()) {
+				res=rs.getString(1);
+			}
+		} catch (SQLException e) {
+			logger.error("SQL error when getting a company by his id");
+			e.printStackTrace();
+		} finally {
+			DaoFactory.close(rs,stmt);
+			DaoFactory.closeConnection();
+		}
+		return res;
+		
+	}
+	
+	
+	/*
+	public void create(Company company) {
+		Connection connection = DaoFactory.getConnection();
+		ResultSet rs=null;
+		Statement stmt=null;
+		try {
+			logger.debug("Creating a statement");
+			stmt = connection.createStatement();
 			logger.debug("Statement created");
 			
 			String query = "INSERT INTO company SET id=null, name='"+company.getName()+"'";
@@ -50,19 +119,22 @@ public class CompanyDao {
 				company.setId(rs.getInt(1));
 			}
 			
-			DaoFactory.close(connection,rs,stmt);
 			
 		} catch (SQLException e) {
+			logger.error("SQL error when trying to create a company");
 			e.printStackTrace();
+		} finally {
+			DaoFactory.close(connection,rs,stmt);
 		}
 	}
 	
 	public void update(Company company) {
+		Connection connection = DaoFactory.getConnection();
+		ResultSet rs=null;
+		Statement stmt=null;
 		try {
-			Connection connection = DaoFactory.getConnection();
-			ResultSet rs=null;
 			logger.debug("Creating a statement");
-			Statement stmt = connection.createStatement();
+			stmt = connection.createStatement();
 			logger.debug("Statement created");
 			
 			String query="UPDATE computer SET name='"+company.getName()+"' WHERE id='"+company.getId()+"'";
@@ -71,9 +143,10 @@ public class CompanyDao {
 			stmt.executeUpdate(query);
 			logger.debug("Query sended succesfully");
 			
-			DaoFactory.close(connection,rs,stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DaoFactory.close(connection,rs,stmt);
 		}
 	}
 	
@@ -96,59 +169,7 @@ public class CompanyDao {
 			e.printStackTrace();
 		}
 	}
-	
-	public ArrayList<Company> getAll() {
-		ArrayList<Company> result = new ArrayList<Company>();
-		try {
-			Connection connection = DaoFactory.getConnection();
-			ResultSet rs=null;
-			logger.debug("Creating a statement");
-			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query = "SELECT * from company";
-			
-			logger.debug("Sending query to list all the computers :\n"+query);
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			
-						
-			while(rs.next()) {
-				int id=rs.getInt(1);
-				String name=rs.getString(2);
-				Company c=new Company(id,name);
-				result.add(c);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	public String getName(int id) {
-		String res=null;
-		try{
-			Connection connection = DaoFactory.getConnection();
-			ResultSet rs=null;
-			logger.debug("Creating a statement");
-			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query = "SELECT cr.name from company cr where id='"+id+"'";
-			
-			logger.debug("Sending query to list all the computers :\n"+query);
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			if(rs.next()) {
-				res=rs.getString(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return res;
-		
-	}
+	*/
 	
 	
 }

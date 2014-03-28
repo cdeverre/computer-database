@@ -9,8 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.Computer;
+
 import services.ServiceFactory;
-import domainClasses.Computer;
 
 /**
  * Servlet implementation class Dashboard
@@ -56,7 +57,7 @@ public class Dashboard extends HttpServlet {
 		String pattern=request.getParameter("pattern");
 		
 		int numberOfPage=1;
-		if(pattern!=null && !pattern.equals("")) {
+		if(	pattern!=null && !"".equals(pattern)) {
 			numberOfComputer=ServiceFactory.getComputerServices().count(pattern);
 			numberOfPage=Math.max(1,ServiceFactory.getComputerServices().getNumberOfPage(numberOfComputer));
 			currentPage=Math.min(currentPage,numberOfPage);

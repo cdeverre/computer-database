@@ -2,8 +2,9 @@ package services;
 
 import java.util.ArrayList;
 
+import model.Company;
+
 import dao.DaoFactory;
-import domainClasses.Company;
 
 
 public class CompanyServices {
@@ -22,7 +23,16 @@ public class CompanyServices {
 	/* *******************************************************/
 
 
-	public void create(Company company) {
+
+	public ArrayList<Company> getAll() {
+		return(DaoFactory.getCompanyDao().getAll());
+	}
+	
+	public String getName(int id) {
+		return(DaoFactory.getCompanyDao().getName(id));
+	}
+	
+	/* 	public void create(Company company) {
 		DaoFactory.getCompanyDao().create(company);
 	}
 	
@@ -33,12 +43,5 @@ public class CompanyServices {
 	public void delete(Company company) {
 		DaoFactory.getCompanyDao().delete(company);
 	}
-	
-	public ArrayList<Company> getAll() {
-		return(DaoFactory.getCompanyDao().getAll());
-	}
-	
-	public String getName(int id) {
-		return(DaoFactory.getCompanyDao().getName(id));
-	}
+	*/
 }
