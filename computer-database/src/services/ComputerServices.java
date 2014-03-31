@@ -1,15 +1,15 @@
 package services;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
+
+import model.Computer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import model.Computer;
 import dao.ComputerDao;
 import dao.DaoFactory;
+import exceptions.TransactionException;
 
 public class ComputerServices {
 	
@@ -29,41 +29,32 @@ public class ComputerServices {
 	/* *******************************************************/
 	
 	public void create(Computer computer) {
-		Connection connection=DaoFactory.getConnection();
+		DaoFactory.startTransaction();
 		try {
-			connection.setAutoCommit(false);
 			DaoFactory.getComputerDao().create(computer);
 			DaoFactory.getLogdao().insertLogCreate(computer.getId());
-			connection.commit();
-			logger.info("Computer created succesfully");
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
+			
+			DaoFactory.commitTransaction();
+			logger.debug("Computer created succesfully");
+		} catch (TransactionException e) {
+			DaoFactory.rollbackTransaction();
+			throw e;
 		} finally {
 			DaoFactory.closeConnection();
 		}
 	}
 	
 	public void update(Computer computer) {
-		Connection connection=DaoFactory.getConnection();
+		DaoFactory.startTransaction();
 		try {
-			connection.setAutoCommit(false);
 			DaoFactory.getComputerDao().update(computer);
 			DaoFactory.getLogdao().insertLogUpdate(computer.getId());
-			connection.commit();
-			logger.info("Computer updated succesfully");
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		} finally {
+			DaoFactory.commitTransaction();
+			logger.debug("Computer updated succesfully");
+		} catch (TransactionException e) {
+			DaoFactory.rollbackTransaction();
+			throw e;
+		}  finally {
 			DaoFactory.closeConnection();
 		}
 		
@@ -71,21 +62,16 @@ public class ComputerServices {
 
 	
 	public void delete(int id) {
-		Connection connection=DaoFactory.getConnection();
+		DaoFactory.startTransaction();
 		try {
-			connection.setAutoCommit(false);
 			DaoFactory.getComputerDao().delete(id);
 			DaoFactory.getLogdao().insertLogDelete(id);
-			connection.commit();
-			logger.info("Computer deleted succesfully");
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			e.printStackTrace();
-		} finally {
+			DaoFactory.commitTransaction();
+			logger.debug("Computer deleted succesfully");
+		} catch (TransactionException e) {
+			DaoFactory.rollbackTransaction();
+			throw e;
+		}  finally {
 			DaoFactory.closeConnection();
 		}
 	}

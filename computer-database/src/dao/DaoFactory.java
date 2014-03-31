@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
+import exceptions.TransactionException;
+
 
 
 public class DaoFactory{
@@ -29,9 +31,9 @@ public class DaoFactory{
     private static BoneCP connectionPool;
     
     private static ThreadLocal<Connection> threadLocal=new ThreadLocal<Connection>() {
-		@Override protected Connection initialValue() {
+		@Override 
+		protected Connection initialValue() {
 			Connection connection = null;
-			
 			
 			try {
 				logger.debug("Trying to create a new connection ...");
@@ -39,15 +41,11 @@ public class DaoFactory{
 				connection= connectionPool.getConnection();
 				
 				logger.debug("Connection established");
-				
-				if(connection==null) System.out.println("aa");
-				if(connection.isClosed()) System.out.println("aa");
-					
 				} catch (SQLException e) {
 					e.printStackTrace();
 			}
 			return connection;
-    };
+		}
     };
     
     static{
@@ -100,17 +98,41 @@ public class DaoFactory{
 	}
 	
 	
+	public static void startTransaction() {
+		try {
+			threadLocal.get().setAutoCommit(false);
+		} catch (SQLException e) {
+			logger.error("Can't set auto commit to false");
+			e.printStackTrace();
+		}
+	}
+	
+	public static void commitTransaction() throws TransactionException{
+		try {
+			threadLocal.get().commit();
+		} catch (SQLException e) {
+			throw new TransactionException("Commit error",e);
+		}
+	}
+	
+	public static void rollbackTransaction() throws TransactionException {
+		try {
+			threadLocal.get().rollback();
+		} catch (SQLException e) {
+			throw new TransactionException("Rollback error",e);
+		}
+	}
 	
 	public static void closeConnection() {
 		try {
 			logger.debug("Closing the connection");
-			DaoFactory.getConnection().close();
+			threadLocal.get().close();
 			logger.debug("Connection closed");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			logger.debug("Removing the ThreadLocal");
-			DaoFactory.threadLocal.remove();
+			threadLocal.remove();
 		}
 	}
 	
