@@ -196,6 +196,8 @@ public class ComputerDao {
 			}
 			query.append(" LIMIT ? OFFSET ? ");
 			
+			DaoFactory.close( rs, stmt);
+			
 			logger.debug("Creating a statement");
 			stmt = connection.prepareStatement(query.toString());
 			logger.debug("Statement created");
@@ -336,6 +338,7 @@ public class ComputerDao {
 				}
 				int companyId = rs.getInt(5);
 				String companyName=null;
+				DaoFactory.close( rs, stmt);
 				
 				rs=stmt.executeQuery("SELECT company.name from company company where company.id="+companyId);
 				if (rs.next()) {

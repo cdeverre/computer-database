@@ -2,11 +2,10 @@ package services;
 
 import java.util.ArrayList;
 
-import model.Computer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import model.Computer;
 import dao.ComputerDao;
 import dao.DaoFactory;
 import exceptions.TransactionException;
