@@ -233,7 +233,7 @@ public class ComputerDao {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close( rs, stmt);
 			connectionFactory.closeConnection();
@@ -260,8 +260,7 @@ public class ComputerDao {
 				res=rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close( rs, stmt);
 			connectionFactory.closeConnection();
@@ -297,8 +296,7 @@ public class ComputerDao {
 				res=rs.getInt(1);
 			}
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close( rs, stmt);
 			connectionFactory.closeConnection();
@@ -352,8 +350,7 @@ public class ComputerDao {
 				res=new Computer(id,name,introduced,discontinued,new Company(companyId,companyName));
 			}
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close( rs, stmt);
 			connectionFactory.closeConnection();
@@ -414,8 +411,7 @@ public class ComputerDao {
 			}
 			
 		} catch (SQLException e) {
-
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close( rs, stmt);
 			connectionFactory.closeConnection();

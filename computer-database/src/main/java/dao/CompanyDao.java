@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
+import exceptions.TransactionException;
 import services.CompanyServices;
 
 @Repository
@@ -65,7 +66,7 @@ public class CompanyDao {
 			
 		} catch (SQLException e) {
 			logger.error("SQL error when getting the list of company");
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close(rs,stmt);
 			connectionFactory.closeConnection();
@@ -93,7 +94,7 @@ public class CompanyDao {
 			}
 		} catch (SQLException e) {
 			logger.error("SQL error when getting a company by his id");
-			e.printStackTrace();
+			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
 			connectionFactory.close(rs,stmt);
 			connectionFactory.closeConnection();
