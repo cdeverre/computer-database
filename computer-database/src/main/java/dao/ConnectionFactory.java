@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
@@ -13,20 +14,15 @@ import com.jolbox.bonecp.BoneCPConfig;
 import exceptions.TransactionException;
 
 
-
-public class DaoFactory{
+@Repository
+public class ConnectionFactory{
 
 	/* *******************************************************/
 	/* ***               Attributs                       *** */
 	/* *******************************************************/
 	
-	private final static ComputerDao computerDao =new ComputerDao();
 	
-	private final static CompanyDao companyDao = new CompanyDao();
-	
-	private final static LogDao logDao = new LogDao();
-	
-    private static Logger logger = LoggerFactory.getLogger(DaoFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
     private static BoneCP connectionPool;
     
@@ -48,7 +44,11 @@ public class DaoFactory{
 		}
     };
     
-    static{
+    /* *******************************************************/
+	/* ***               Constructors                    *** */
+	/* *******************************************************/
+    
+    public ConnectionFactory() {
 
 		logger.debug("Search for Driver JDC..");
 		try {
@@ -79,26 +79,14 @@ public class DaoFactory{
 	/* *******************************************************/
 	/* ***               Methods                         *** */
 	/* *******************************************************/
-	
-	public static ComputerDao getComputerDao() {
-		return computerDao;
-	}
-	
-	public static CompanyDao getCompanyDao() {
-		return companyDao;
-	}
-	
 
-	public static LogDao getLogdao() {
-		return logDao;
-	}
 	
-	public static Connection getConnection() {
+	public Connection getConnection() {
 		return threadLocal.get();
 	}
 	
 	
-	public static void startTransaction() {
+	public void startTransaction() {
 		try {
 			threadLocal.get().setAutoCommit(false);
 		} catch (SQLException e) {
@@ -107,7 +95,7 @@ public class DaoFactory{
 		}
 	}
 	
-	public static void commitTransaction() throws TransactionException{
+	public void commitTransaction() throws TransactionException{
 		try {
 			threadLocal.get().commit();
 		} catch (SQLException e) {
@@ -115,7 +103,7 @@ public class DaoFactory{
 		}
 	}
 	
-	public static void rollbackTransaction() throws TransactionException {
+	public void rollbackTransaction() throws TransactionException {
 		try {
 			threadLocal.get().rollback();
 		} catch (SQLException e) {
@@ -123,7 +111,7 @@ public class DaoFactory{
 		}
 	}
 	
-	public static void closeConnection() {
+	public void closeConnection() {
 		try {
 			logger.debug("Closing the connection");
 			threadLocal.get().close();
@@ -136,7 +124,7 @@ public class DaoFactory{
 		}
 	}
 	
-	public static void close( ResultSet rs, java.sql.Statement stmt) {
+	public void close( ResultSet rs, java.sql.Statement stmt) {
 		try{
 			if(rs!=null) {
 				logger.debug("Trying to close the result set");

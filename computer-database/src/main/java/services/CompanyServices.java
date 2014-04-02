@@ -4,16 +4,21 @@ import java.util.ArrayList;
 
 import model.Company;
 
-import dao.DaoFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import dao.CompanyDao;
 
+@Service
 public class CompanyServices {
 
+	@Autowired
+	private CompanyDao companyDao;
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
 	/* *******************************************************/
 	
-	protected CompanyServices() {
+	public CompanyServices() {
 		super();
 	}
 	
@@ -25,23 +30,14 @@ public class CompanyServices {
 
 
 	public ArrayList<Company> getAll() {
-		return(DaoFactory.getCompanyDao().getAll());
+		return(companyDao.getAll());
 	}
 	
 	public String getName(int id) {
-		return(DaoFactory.getCompanyDao().getName(id));
+		return(companyDao.getName(id));
 	}
 	
-	/* 	public void create(Company company) {
-		DaoFactory.getCompanyDao().create(company);
-	}
 	
-	public void update(Company company) {
-		DaoFactory.getCompanyDao().update(company);
-	}
 	
-	public void delete(Company company) {
-		DaoFactory.getCompanyDao().delete(company);
-	}
-	*/
+	
 }

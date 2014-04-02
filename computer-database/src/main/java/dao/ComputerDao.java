@@ -16,11 +16,13 @@ import model.Computer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import exceptions.TransactionException;
 
 
-
+@Repository
 public class ComputerDao {
 
 		
@@ -28,12 +30,14 @@ public class ComputerDao {
     
     public static final int LIMIT=13;
 
+    @Autowired
+    private ConnectionFactory connectionFactory;
 	
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
 	/* *******************************************************/
 	
-	protected ComputerDao() {
+	public ComputerDao() {
 		super();
 	}
 	
@@ -45,7 +49,7 @@ public class ComputerDao {
 	public void create(Computer computer) throws TransactionException  {
 		
 			
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
@@ -90,12 +94,12 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 		}
 	}
 	
 	public void update(Computer computer) throws TransactionException {
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 
@@ -134,7 +138,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to update a computer",e);
 		} finally {
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 		}
 		
 	}
@@ -143,7 +147,7 @@ public class ComputerDao {
 	
 	
 	public void delete(int id) throws TransactionException {
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 
@@ -162,7 +166,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to delete a computer",e);
 		} finally {
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 		}
 		
 	}
@@ -171,7 +175,7 @@ public class ComputerDao {
 	
 	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
 		ArrayList<Computer> result = new ArrayList<Computer>();
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -196,7 +200,7 @@ public class ComputerDao {
 			}
 			query.append(" LIMIT ? OFFSET ? ");
 			
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 			
 			logger.debug("Creating a statement");
 			stmt = connection.prepareStatement(query.toString());
@@ -231,15 +235,15 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close( rs, stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close( rs, stmt);
+			connectionFactory.closeConnection();
 		}
 		return result;
 	}
 	
 	public int count() {
 		int res = 0;
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -259,15 +263,15 @@ public class ComputerDao {
 			
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close( rs, stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close( rs, stmt);
+			connectionFactory.closeConnection();
 		}
 		return res;
 	}
 	
 	public int count(String pattern) {
 		int res = 0;
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -296,15 +300,15 @@ public class ComputerDao {
 
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close( rs, stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close( rs, stmt);
+			connectionFactory.closeConnection();
 		}
 		return res;
 	}
 	
 	public Computer find(int id) {
 		Computer res=null;
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -338,8 +342,9 @@ public class ComputerDao {
 				}
 				int companyId = rs.getInt(5);
 				String companyName=null;
-				DaoFactory.close( rs, stmt);
+				connectionFactory.close( rs, stmt);
 				
+				stmt=connection.prepareStatement(query);
 				rs=stmt.executeQuery("SELECT company.name from company company where company.id="+companyId);
 				if (rs.next()) {
 					companyName=rs.getString(1);
@@ -350,8 +355,8 @@ public class ComputerDao {
 
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close( rs, stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close( rs, stmt);
+			connectionFactory.closeConnection();
 		}
 		return res;
 	}
@@ -360,7 +365,7 @@ public class ComputerDao {
 	
 	public ArrayList<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType) {
 		ArrayList<Computer> result = new ArrayList<Computer>();
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -412,8 +417,8 @@ public class ComputerDao {
 
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close( rs, stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close( rs, stmt);
+			connectionFactory.closeConnection();
 		}
 		return result;
 		

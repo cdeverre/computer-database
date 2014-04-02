@@ -10,21 +10,28 @@ import model.Company;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Repository;
 
+import services.CompanyServices;
 
+@Repository
 public class CompanyDao {
 
-    private static Logger logger = LoggerFactory.getLogger(CompanyDao.class);
+    private Logger logger = LoggerFactory.getLogger(CompanyDao.class);
 
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
 	/* *******************************************************/
 	
-	protected CompanyDao() {
+	public CompanyDao() {
 		super();
 	}
-	
 		
 	/* *******************************************************/
 	/* ***               Methods                         *** */
@@ -34,7 +41,7 @@ public class CompanyDao {
 	
 	public ArrayList<Company> getAll() {
 		ArrayList<Company> result = new ArrayList<Company>();
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		Statement stmt=null;
 		try {
@@ -60,15 +67,15 @@ public class CompanyDao {
 			logger.error("SQL error when getting the list of company");
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close(rs,stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close(rs,stmt);
+			connectionFactory.closeConnection();
 		}
 		return result;
 	}
 	
 	public String getName(int id) {
 		String res=null;
-		Connection connection = DaoFactory.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		Statement stmt=null;
 		try{
@@ -88,88 +95,13 @@ public class CompanyDao {
 			logger.error("SQL error when getting a company by his id");
 			e.printStackTrace();
 		} finally {
-			DaoFactory.close(rs,stmt);
-			DaoFactory.closeConnection();
+			connectionFactory.close(rs,stmt);
+			connectionFactory.closeConnection();
 		}
 		return res;
 		
 	}
 	
-	
-	/*
-	public void create(Company company) {
-		Connection connection = DaoFactory.getConnection();
-		ResultSet rs=null;
-		Statement stmt=null;
-		try {
-			logger.debug("Creating a statement");
-			stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query = "INSERT INTO company SET id=null, name='"+company.getName()+"'";
-			
-			logger.debug("Sending query to create a company");
-			stmt.executeUpdate(query,Statement.RETURN_GENERATED_KEYS);
-			logger.debug("Query sended succesfully");
-			
-			logger.debug("Getting the generated keys");
-			rs=stmt.getGeneratedKeys();
-			
-			if(rs.next()) {
-				company.setId(rs.getInt(1));
-			}
-			
-			
-		} catch (SQLException e) {
-			logger.error("SQL error when trying to create a company");
-			e.printStackTrace();
-		} finally {
-			DaoFactory.close(connection,rs,stmt);
-		}
-	}
-	
-	public void update(Company company) {
-		Connection connection = DaoFactory.getConnection();
-		ResultSet rs=null;
-		Statement stmt=null;
-		try {
-			logger.debug("Creating a statement");
-			stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query="UPDATE computer SET name='"+company.getName()+"' WHERE id='"+company.getId()+"'";
-			
-			logger.debug("Sending query to update a company :\n"+query);
-			stmt.executeUpdate(query);
-			logger.debug("Query sended succesfully");
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DaoFactory.close(connection,rs,stmt);
-		}
-	}
-	
-	public void delete(Company company) {
-		try {
-			Connection connection = DaoFactory.getConnection();
-			ResultSet rs=null;
-			logger.debug("Creating a statement");
-			Statement stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query= "DELETE FROM computer WHERE id='"+company.getId()+"'";
-			
-			logger.debug("Sending query to delete a company :\n"+query);
-			stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			
-			DaoFactory.close(connection,rs,stmt);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	*/
-	
+		
 	
 }

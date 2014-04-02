@@ -7,21 +7,27 @@ import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import exceptions.TransactionException;
 
+@Repository
 public class LogDao {
 
 	
 	 private static Logger logger = LoggerFactory.getLogger(LogDao.class);
 	 
-	 protected LogDao() {
+	 @Autowired
+	 private ConnectionFactory connectionFactory;
+	 
+	 public LogDao() {
 		 
 	 }
 	 
 	 
 	 public void insertLogCreate(int id) throws TransactionException {
-		Connection connection=DaoFactory.getConnection();	 
+		Connection connection=connectionFactory.getConnection();	 
 		ResultSet rs =null ; 
 		Statement stmt=null;
 		
@@ -40,13 +46,13 @@ public class LogDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to log a create",e);
 		} finally {
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 		}
 	 }
 
 
 	public void insertLogUpdate(int id) throws TransactionException {
-		Connection connection=DaoFactory.getConnection();	 
+		Connection connection=connectionFactory.getConnection();	 
 		ResultSet rs =null ; 
 		Statement stmt=null;
 		 
@@ -64,14 +70,14 @@ public class LogDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to log an update",e);
 		} finally {
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 		}
 		
 	}
 
 
 	public void insertLogDelete(int id) throws TransactionException {
-		Connection connection=DaoFactory.getConnection();	 
+		Connection connection=connectionFactory.getConnection();	 
 		ResultSet rs =null ; 
 		Statement stmt=null;
 		
@@ -90,7 +96,7 @@ public class LogDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to log a delete",e);
 		} finally {
-			DaoFactory.close( rs, stmt);
+			connectionFactory.close( rs, stmt);
 		}
 	}
 }

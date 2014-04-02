@@ -14,7 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import model.Company;
 import model.Computer;
 
-import services.ServiceFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import services.CompanyServices;
+import services.ComputerServices;
 import tools.Tools;
 
 /**
@@ -24,6 +28,13 @@ import tools.Tools;
 public class AddComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+	
+	@Autowired
+	private CompanyServices companyServices;
+	
+	@Autowired
+	private ComputerServices computerServices;
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -31,11 +42,18 @@ public class AddComputer extends HttpServlet {
         super();
     }
 
+    
+    @Override
+    public void init() throws ServletException {
+    	super.init();
+    	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
+    }
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Company> companyList = ServiceFactory.getCompanyServices().getAll();
+		ArrayList<Company> companyList = companyServices.getAll();
 		request.setAttribute("companyList", companyList);
 			
 		getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
@@ -78,7 +96,7 @@ public class AddComputer extends HttpServlet {
 		if(idString!=null && !"null".equals(idString)) {
 			try {
 				int id=Integer.parseInt(idString);
-				String companyName=ServiceFactory.getCompanyServices().getName(id);
+				String companyName=companyServices.getName(id);
 				
 				company = new Company(id,companyName);
 			} catch (NumberFormatException e) {
@@ -90,7 +108,7 @@ public class AddComputer extends HttpServlet {
 		Computer computer=new Computer(name,dateIntroduced,dateDiscontinued,company);
 		
 		if (!error) {
-			ServiceFactory.getComputerServices().create(computer);
+			computerServices.create(computer);
 			
 			response.sendRedirect("/computer-database/Dashboard");
 		} else {

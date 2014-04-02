@@ -2,23 +2,38 @@ package services;
 
 import java.util.ArrayList;
 
+import model.Computer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import model.Computer;
 import dao.ComputerDao;
-import dao.DaoFactory;
+import dao.ConnectionFactory;
+import dao.LogDao;
 import exceptions.TransactionException;
 
+@Service
 public class ComputerServices {
 	
+	
 	private static Logger logger = LoggerFactory.getLogger(ComputerServices.class);
+	
+	@Autowired
+	private ConnectionFactory connectionFactory;
+	
+	@Autowired
+	private ComputerDao computerDao;
+	
+	@Autowired
+	private LogDao logDao;
 	
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
 	/* *******************************************************/
 	
-	protected ComputerServices() {
+	public ComputerServices() {
 		super();
 	}
 	
@@ -28,65 +43,65 @@ public class ComputerServices {
 	/* *******************************************************/
 	
 	public void create(Computer computer) {
-		DaoFactory.startTransaction();
+		connectionFactory.startTransaction();
 		try {
-			DaoFactory.getComputerDao().create(computer);
-			DaoFactory.getLogdao().insertLogCreate(computer.getId());
+			computerDao.create(computer);
+			logDao.insertLogCreate(computer.getId());
 			
-			DaoFactory.commitTransaction();
+			connectionFactory.commitTransaction();
 			logger.debug("Computer created succesfully");
 		} catch (TransactionException e) {
-			DaoFactory.rollbackTransaction();
+			connectionFactory.rollbackTransaction();
 			throw e;
 		} finally {
-			DaoFactory.closeConnection();
+			connectionFactory.closeConnection();
 		}
 	}
 	
 	public void update(Computer computer) {
-		DaoFactory.startTransaction();
+		connectionFactory.startTransaction();
 		try {
-			DaoFactory.getComputerDao().update(computer);
-			DaoFactory.getLogdao().insertLogUpdate(computer.getId());
-			DaoFactory.commitTransaction();
+			computerDao.update(computer);
+			logDao.insertLogUpdate(computer.getId());
+			connectionFactory.commitTransaction();
 			logger.debug("Computer updated succesfully");
 		} catch (TransactionException e) {
-			DaoFactory.rollbackTransaction();
+			connectionFactory.rollbackTransaction();
 			throw e;
 		}  finally {
-			DaoFactory.closeConnection();
+			connectionFactory.closeConnection();
 		}
 		
 	}
 
 	
 	public void delete(int id) {
-		DaoFactory.startTransaction();
+		connectionFactory.startTransaction();
 		try {
-			DaoFactory.getComputerDao().delete(id);
-			DaoFactory.getLogdao().insertLogDelete(id);
-			DaoFactory.commitTransaction();
+			computerDao.delete(id);
+			logDao.insertLogDelete(id);
+			connectionFactory.commitTransaction();
 			logger.debug("Computer deleted succesfully");
 		} catch (TransactionException e) {
-			DaoFactory.rollbackTransaction();
+			connectionFactory.rollbackTransaction();
 			throw e;
 		}  finally {
-			DaoFactory.closeConnection();
+			connectionFactory.closeConnection();
 		}
 	}
 		
 	public Computer find(int id) {
 
-		return (DaoFactory.getComputerDao().find(id));
+		return (computerDao.find(id));
 	}
 	
 	public int count() {
-		return (DaoFactory.getComputerDao().count());
+		return (computerDao.count());
 	}
 
 
 	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
-		return (DaoFactory.getComputerDao().getAllPagination(currentPage,orderByColumns, orderByType));
+		return (computerDao.getAllPagination(currentPage,orderByColumns, orderByType));
 	}
 
 
@@ -96,18 +111,18 @@ public class ComputerServices {
 
 
 	public ArrayList<Computer> search(String pattern, int currentPage,String orderByColumns,boolean orderByType) {
-		return DaoFactory.getComputerDao().search(pattern,currentPage,orderByColumns,orderByType);
+		return computerDao.search(pattern,currentPage,orderByColumns,orderByType);
 
 	}
 
 
 	public int count(String pattern) {
-		return (DaoFactory.getComputerDao().count(pattern));
+		return (computerDao.count(pattern));
 	}
 	
 	
 //	public void delete(Computer computer) {
-//		DaoFactory.getComputerDao().delete(computer);
+//		computerDao.delete(computer);
 //	}
 	
 }

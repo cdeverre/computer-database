@@ -14,7 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import model.Company;
 import model.Computer;
 
-import services.ServiceFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import services.CompanyServices;
+import services.ComputerServices;
 import tools.Tools;
 
 /**
@@ -24,6 +28,20 @@ import tools.Tools;
 public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+	@Autowired
+	private ComputerServices computerServices;
+	
+	@Autowired
+	private CompanyServices companyServices;
+	
+	
+	 @Override
+	    public void init() throws ServletException {
+	    	super.init();
+	    	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
+	    }
+	 
+	 
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -36,7 +54,7 @@ public class EditComputer extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int id=Integer.parseInt(request.getParameter("id"));
-		Computer computer=ServiceFactory.getComputerServices().find(id);
+		Computer computer=computerServices.find(id);
 		request.setAttribute("computerName", computer.getName());
 		request.setAttribute("computerIntroduced", Tools.createStringFromCalendar(computer.getDateIntroduced()));
 		request.setAttribute("computerDiscontinued", Tools.createStringFromCalendar(computer.getDateDiscontinued()));
@@ -44,7 +62,7 @@ public class EditComputer extends HttpServlet {
 		request.setAttribute("id", id);
 
 		
-		ArrayList<Company> companyList = ServiceFactory.getCompanyServices().getAll();
+		ArrayList<Company> companyList = companyServices.getAll();
 		request.setAttribute("companyList", companyList);
 		
 		getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
@@ -87,7 +105,7 @@ public class EditComputer extends HttpServlet {
 		Company company=null;
 		if(idString!=null && ! "null".equals(idString)) {
 			int companyId=Integer.parseInt(idString);
-			String companyName=ServiceFactory.getCompanyServices().getName(companyId);
+			String companyName=companyServices.getName(companyId);
 		
 			company = new Company(companyId,companyName);
 		} 
@@ -97,7 +115,7 @@ public class EditComputer extends HttpServlet {
 		
 		if (!error) {
 
-			ServiceFactory.getComputerServices().update(computer);
+			computerServices.update(computer);
 			
 			response.sendRedirect("/computer-database/Dashboard");
 		} else {

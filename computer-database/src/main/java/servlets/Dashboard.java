@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,15 +12,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.Computer;
 
-import services.ServiceFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import services.ComputerServices;
 
 /**
  * Servlet implementation class Dashboard
  */
 @WebServlet("/Dashboard")
 public class Dashboard extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
        
+	@Autowired
+	private ComputerServices computerServices;
+	
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -27,6 +36,11 @@ public class Dashboard extends HttpServlet {
         super();
     }
 
+    @Override
+    public void init() throws ServletException {
+    	super.init();
+    	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
+    }
     
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -58,15 +72,15 @@ public class Dashboard extends HttpServlet {
 		
 		int numberOfPage=1;
 		if(	pattern!=null && !"".equals(pattern)) {
-			numberOfComputer=ServiceFactory.getComputerServices().count(pattern);
-			numberOfPage=Math.max(1,ServiceFactory.getComputerServices().getNumberOfPage(numberOfComputer));
+			numberOfComputer=computerServices.count(pattern);
+			numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
 			currentPage=Math.min(currentPage,numberOfPage);
-			computerList = ServiceFactory.getComputerServices().search(pattern,currentPage,orderByColumns,orderByType);
+			computerList = computerServices.search(pattern,currentPage,orderByColumns,orderByType);
 		} else {
-			numberOfComputer=ServiceFactory.getComputerServices().count();
-			numberOfPage=Math.max(1,ServiceFactory.getComputerServices().getNumberOfPage(numberOfComputer));
+			numberOfComputer=computerServices.count();
+			numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
 			currentPage=Math.min(currentPage, numberOfPage);
-			computerList = ServiceFactory.getComputerServices().getAllPagination(currentPage,orderByColumns,orderByType);
+			computerList = computerServices.getAllPagination(currentPage,orderByColumns,orderByType);
 		}
 		
 //		UrlParameters urlParameters=new UrlParameters(currentPage,numberOfPage,orderByColumns,orderByType,pattern);
