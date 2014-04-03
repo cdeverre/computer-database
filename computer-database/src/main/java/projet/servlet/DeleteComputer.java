@@ -1,4 +1,4 @@
-package servlets;
+package projet.servlet;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import services.ComputerServices;
+import projet.service.ComputerServices;
 
 /**
  * Servlet implementation class DeleteComputer
@@ -42,8 +42,12 @@ public class DeleteComputer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int id=Integer.parseInt(request.getParameter("id"));
 		computerServices.delete(id);
-		
-				
+					
+		request.setAttribute("delete",request.getParameter("delete"));
+		request.setAttribute("pattern", request.getParameter("pattern"));
+		request.setAttribute("currentPage", request.getParameter("currentPage"));
+		request.setAttribute("orderByColumns", request.getParameter("orderByColumns"));
+		request.setAttribute("orderByType", request.getParameter("orderByType"));
 		getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
 	}
 

@@ -16,6 +16,19 @@
 		<customTag:link path="AddComputer" text='<span class="glyphicon glyphicon-plus"></span> AddComputer' preference='class="btn btn-success" id="add"'></customTag:link>
 	</div>
 
+	<c:if test="${add==true }">
+		<div class="alert alert-success alert-dismissable">
+		  <button type="button" class="close" data-dismiss="alert" >&times;</button>
+			Good job, you add a computer!
+		</div>
+	</c:if>
+	
+	<c:if test="${delete==true }">
+		<div class="alert alert-success alert-dismissable">
+		  <button type="button" class="close" data-dismiss="alert" >&times;</button>
+			Delete completed
+		</div>
+	</c:if>
 	<div class="row">
 	<table class="computers table table-striped table-bordered">
 			<thead>
@@ -66,7 +79,8 @@
 						<td><fmt:formatDate type="date" value="${computer.dateIntroduced.getTime()}" /></td>
 						<td><fmt:formatDate type="date" value="${computer.dateDiscontinued.getTime()}" /></td>
 						<td>${computer.company.name}</td>
-						<td><customTag:link path="DeleteComputer" otherParameters="id=${computer.id }" 
+						<td><customTag:link path="DeleteComputer" otherParameters="id=${computer.id }&currentPage=${currentPage}
+						&pattern=${pattern}&orderByColumns=${orderByColumns}&orderByType=${orderByType }" 
 						text='<span class="glyphicon glyphicon-trash"></span> Delete'
 						preference='class="btn btn-danger" id="delete"'></customTag:link></td>
 					</tr>

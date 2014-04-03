@@ -1,18 +1,18 @@
-package services;
+package projet.service;
 
 import java.util.ArrayList;
-
-import model.Computer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dao.ComputerDao;
-import dao.ConnectionFactory;
-import dao.LogDao;
-import exceptions.TransactionException;
+import projet.dao.ComputerDao;
+import projet.dao.ConnectionFactory;
+import projet.dao.LogDao;
+import projet.exception.ComputerNonexistentException;
+import projet.exception.TransactionException;
+import projet.model.Computer;
 
 @Service
 public class ComputerServices {
@@ -75,7 +75,7 @@ public class ComputerServices {
 	}
 
 	
-	public void delete(int id) {
+	public void delete(long id) {
 		connectionFactory.startTransaction();
 		try {
 			computerDao.delete(id);
@@ -90,8 +90,11 @@ public class ComputerServices {
 		}
 	}
 		
-	public Computer find(int id) {
-
+	public Computer find(long id) {
+		Computer c=computerDao.find(id);
+		if (c==null) {
+			throw new ComputerNonexistentException();
+		}
 		return (computerDao.find(id));
 	}
 	
@@ -121,8 +124,5 @@ public class ComputerServices {
 	}
 	
 	
-//	public void delete(Computer computer) {
-//		computerDao.delete(computer);
-//	}
 	
 }

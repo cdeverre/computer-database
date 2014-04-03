@@ -1,6 +1,6 @@
-package wrapper;
+package projet.wrapper;
 
-public class UrlParameters {
+public class PageWrapper {
 
 	/* *******************************************************/
 	/* ***               Attributs                       *** */
@@ -17,16 +17,17 @@ public class UrlParameters {
 	private String pattern;
 	
 	
+	
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
 	/* *******************************************************/
 	
 	
-	public UrlParameters() {
+	public PageWrapper() {
 		super();
 	}
 
-	public UrlParameters(int currentPage, int numberOfPage,String OrderByColumns, boolean OrderByType,String pattern) {
+	public PageWrapper(int currentPage, int numberOfPage,String OrderByColumns, boolean OrderByType,String pattern) {
 		this.currentPage=currentPage;
 		this.numberOfPage=numberOfPage;
 		this.OrderByColumns=OrderByColumns;

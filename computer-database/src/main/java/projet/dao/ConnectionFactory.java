@@ -1,4 +1,4 @@
-package dao;
+package projet.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import projet.exception.TransactionException;
+
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
-
-import exceptions.TransactionException;
 
 
 @Repository

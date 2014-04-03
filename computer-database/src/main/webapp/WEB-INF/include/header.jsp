@@ -19,6 +19,7 @@
 <script src="js/jquery.validate.min.js"></script>
 
 <script src="js/form-validation.js"></script>
+ <script src="js/bootstrap.min.js"></script>
 
 
 

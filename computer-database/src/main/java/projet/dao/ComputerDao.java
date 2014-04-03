@@ -1,4 +1,4 @@
-package dao;
+package projet.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,15 +11,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import model.Company;
-import model.Computer;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import exceptions.TransactionException;
+import projet.exception.TransactionException;
+import projet.model.Company;
+import projet.model.Computer;
 
 
 @Repository
@@ -88,7 +87,7 @@ public class ComputerDao {
 	
 			if(rs.next()) {
 	
-				computer.setId(rs.getInt(1));
+				computer.setId(rs.getLong(1));
 	
 			}
 		} catch (SQLException e) {
@@ -104,7 +103,8 @@ public class ComputerDao {
 		PreparedStatement stmt=null;
 
 		try {
-			String query="UPDATE computer SET name= ? , introduced=FROM_UNIXTIME( ? ), discontinued=FROM_UNIXTIME( ? ), company_id= ?  WHERE id= ?  ";
+			String query="UPDATE computer SET name= ? , introduced=FROM_UNIXTIME( ? )"
+					+ " ,discontinued=FROM_UNIXTIME( ? ), company_id= ?  WHERE id= ?  ";
 			
 			
 			logger.debug("Creating a statement");
@@ -129,7 +129,6 @@ public class ComputerDao {
 			} else {
 				stmt.setNull(4, Types.NULL);
 			}
-			
 			stmt.setLong(5, computer.getId());
 			
 			stmt.executeUpdate();
@@ -146,7 +145,7 @@ public class ComputerDao {
 
 	
 	
-	public void delete(int id) throws TransactionException {
+	public void delete(long id) throws TransactionException {
 		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
@@ -184,9 +183,9 @@ public class ComputerDao {
 			stmt = connection.prepareStatement("SELECT * from company");
 			rs=stmt.executeQuery();
 			
-			HashMap<Integer, String> companyTable = new HashMap<Integer,String>();
+			HashMap<Long, String> companyTable = new HashMap<Long,String>();
 			while(rs.next()){
-				companyTable.put(rs.getInt(1), rs.getString(2));
+				companyTable.put(rs.getLong(1), rs.getString(2));
 			}
 			
 			
@@ -214,7 +213,7 @@ public class ComputerDao {
 			logger.debug("Query sended succesfully");
 			
 			while(rs.next()) {
-				int id=rs.getInt(1);
+				long id=rs.getLong(1);
 				String name=rs.getString(2);
 				Calendar introduced=null;
 				if(rs.getDate(3)!=null) {
@@ -226,7 +225,7 @@ public class ComputerDao {
 					discontinued=new GregorianCalendar();
 					discontinued.setTime(rs.getDate(4));
 				}
-				int companyId = rs.getInt(5);
+				long companyId = rs.getLong(5);
 				
 				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,companyTable.get(companyId)));
 				result.add(c);
@@ -304,7 +303,7 @@ public class ComputerDao {
 		return res;
 	}
 	
-	public Computer find(int id) {
+	public Computer find(long id) {
 		Computer res=null;
 		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
@@ -338,7 +337,7 @@ public class ComputerDao {
 					discontinued=new GregorianCalendar();
 					discontinued.setTime(rs.getDate(4));
 				}
-				int companyId = rs.getInt(5);
+				long companyId = rs.getLong(5);
 				String companyName=null;
 				connectionFactory.close( rs, stmt);
 				
@@ -392,7 +391,7 @@ public class ComputerDao {
 			logger.debug("Query sended succesfully");
 			
 			while(rs.next()) {
-				int id=rs.getInt(1);
+				long id=rs.getLong(1);
 				String name=rs.getString(2);
 				Calendar introduced=null;
 				if(rs.getDate(3)!=null) {
@@ -404,7 +403,7 @@ public class ComputerDao {
 					discontinued=new GregorianCalendar();
 					discontinued.setTime(rs.getDate(4));
 				}
-				int companyId = rs.getInt(5);
+				long companyId = rs.getLong(5);
 				
 				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,rs.getString(7)));
 				result.add(c);

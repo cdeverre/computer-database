@@ -1,4 +1,4 @@
-package dao;
+package projet.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import exceptions.TransactionException;
+import projet.exception.TransactionException;
 
 @Repository
 public class LogDao {
@@ -26,7 +26,7 @@ public class LogDao {
 	 }
 	 
 	 
-	 public void insertLogCreate(int id) throws TransactionException {
+	 public void insertLogCreate(long id) throws TransactionException {
 		Connection connection=connectionFactory.getConnection();	 
 		ResultSet rs =null ; 
 		Statement stmt=null;
@@ -51,7 +51,7 @@ public class LogDao {
 	 }
 
 
-	public void insertLogUpdate(int id) throws TransactionException {
+	public void insertLogUpdate(long id) throws TransactionException {
 		Connection connection=connectionFactory.getConnection();	 
 		ResultSet rs =null ; 
 		Statement stmt=null;
@@ -76,7 +76,7 @@ public class LogDao {
 	}
 
 
-	public void insertLogDelete(int id) throws TransactionException {
+	public void insertLogDelete(long id) throws TransactionException {
 		Connection connection=connectionFactory.getConnection();	 
 		ResultSet rs =null ; 
 		Statement stmt=null;

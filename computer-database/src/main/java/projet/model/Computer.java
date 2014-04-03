@@ -1,10 +1,10 @@
-package model;
+package projet.model;
 
 import java.util.Calendar;
 
 public class Computer {
 	
-	private int id;
+	private long id;
 	private String name;
 	private Calendar DateIntroduced;
 	private Calendar DateDiscontinued;
@@ -14,7 +14,7 @@ public class Computer {
 	public Computer() {
 		super();
 	}
-	public Computer(int id,String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
+	public Computer(long id,String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
 		this.id=id;
 		this.name=name;
 		this.DateIntroduced=DateIntroduced;
@@ -23,6 +23,7 @@ public class Computer {
 	}
 	
 	public Computer(String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
+		this.id=-1;
 		this.name=name;
 		this.DateIntroduced=DateIntroduced;
 		this.DateDiscontinued=DateDiscontinued;
@@ -32,14 +33,14 @@ public class Computer {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	

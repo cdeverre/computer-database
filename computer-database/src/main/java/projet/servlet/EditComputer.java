@@ -1,9 +1,7 @@
-package servlets;
+package projet.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,15 +9,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Company;
-import model.Computer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import services.CompanyServices;
-import services.ComputerServices;
-import tools.Tools;
+import projet.dto.ComputerDto;
+import projet.mapper.Mapper;
+import projet.model.Company;
+import projet.model.Computer;
+import projet.service.CompanyServices;
+import projet.service.ComputerServices;
+import projet.tool.Tools;
+import projet.validator.ComputerValidator;
 
 /**
  * Servlet implementation class EditComputer
@@ -34,6 +34,8 @@ public class EditComputer extends HttpServlet {
 	@Autowired
 	private CompanyServices companyServices;
 	
+	@Autowired
+	private Mapper mapper;
 	
 	 @Override
 	    public void init() throws ServletException {
@@ -53,7 +55,8 @@ public class EditComputer extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int id=Integer.parseInt(request.getParameter("id"));
+		String stringid=request.getParameter("id");
+		long id = mapper.parseIdToInt(stringid);
 		Computer computer=computerServices.find(id);
 		request.setAttribute("computerName", computer.getName());
 		request.setAttribute("computerIntroduced", Tools.createStringFromCalendar(computer.getDateIntroduced()));
@@ -75,51 +78,43 @@ public class EditComputer extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id=request.getParameter("id");
-		boolean error=false;
+		String error;
 		String name =request.getParameter("name");
-		if (name==null || "".equals(name)) {
-			error=true;
-		}		
-		Calendar dateIntroduced = new GregorianCalendar();
 		String introduced=request.getParameter("introduced");
-		if (introduced!=null && !"".equals(introduced)) {
-			error=!(Tools.validDate(introduced));
-			if(!error) {
-				Tools.setCalendar(dateIntroduced, introduced);
-			}
-		} else {
-			dateIntroduced=null;
-		}
-		
-		Calendar dateDiscontinued = new GregorianCalendar();
 		String discontinued=request.getParameter("discontinued");
-		if(discontinued!=null&& !"".equals(discontinued)) {
-			error=!(Tools.validDate(discontinued));
-			if(!error) {
-				Tools.setCalendar(dateDiscontinued, discontinued);
-			}		} else {
-			dateDiscontinued=null;
-		}
-				
 		String idString =request.getParameter("company");
-		Company company=null;
-		if(idString!=null && ! "null".equals(idString)) {
-			int companyId=Integer.parseInt(idString);
-			String companyName=companyServices.getName(companyId);
 		
-			company = new Company(companyId,companyName);
-		} 
+		ComputerDto computerDto=new ComputerDto(id,name,introduced,discontinued,idString);
+		
+		error=ComputerValidator.validate(computerDto);
 		
 		
-		Computer computer=new Computer(Integer.parseInt(id),name,dateIntroduced,dateDiscontinued,company);
-		
-		if (!error) {
+		if (error.equals("00000")) {
 
+			Computer computer=mapper.computerDtoToComputer(computerDto);
+			
+			computerServices.find(computer.getId());
+
+			
+			companyServices.exist(computer.getCompany());
+ 
 			computerServices.update(computer);
 			
 			response.sendRedirect("/computer-database/Dashboard");
 		} else {
-			response.sendRedirect("/computer-database/AddComputer");
+			request.setAttribute("computerName",name);
+			request.setAttribute("computerIntroduced",introduced);
+			request.setAttribute("computerDiscontinued",discontinued);
+			request.setAttribute("companyId",idString);
+			
+			ArrayList<Company> companyList = companyServices.getAll();
+			request.setAttribute("companyList", companyList);
+			
+			request.setAttribute("errorName",error.substring(1, 2));
+			request.setAttribute("errorIntroduced",error.substring(2, 3));
+			request.setAttribute("errorDiscontinued",error.substring(3, 4));
+			request.setAttribute("errorCompanyId",error.substring(4, 5));
+			getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
 		}
 	}
 

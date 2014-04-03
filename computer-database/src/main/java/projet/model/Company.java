@@ -1,8 +1,8 @@
-package model;
+package projet.model;
 
 public class Company {
 
-	private int id;
+	private long id;
 	private String name;
 	
 	public Company() {
@@ -14,21 +14,21 @@ public class Company {
 		this.name=name;
 	}
 	
-	public Company(int id,String name){
+	public Company(long id,String name){
 		this.id=id;
 		this.name=name;
 	}
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	

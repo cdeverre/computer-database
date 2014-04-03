@@ -1,4 +1,4 @@
-package dao;
+package projet.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -6,17 +6,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import model.Company;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Repository;
 
-import exceptions.TransactionException;
-import services.CompanyServices;
+import projet.exception.TransactionException;
+import projet.model.Company;
 
 @Repository
 public class CompanyDao {
@@ -58,7 +54,7 @@ public class CompanyDao {
 			
 						
 			while(rs.next()) {
-				int id=rs.getInt(1);
+				long id=rs.getLong(1);
 				String name=rs.getString(2);
 				Company c=new Company(id,name);
 				result.add(c);
@@ -74,7 +70,7 @@ public class CompanyDao {
 		return result;
 	}
 	
-	public String getName(int id) {
+	public String getName(long id) {
 		String res=null;
 		Connection connection = connectionFactory.getConnection();
 		ResultSet rs=null;
@@ -102,6 +98,8 @@ public class CompanyDao {
 		return res;
 		
 	}
+
+	
 	
 		
 	

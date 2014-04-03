@@ -1,9 +1,7 @@
-package servlets;
+package projet.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,15 +9,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.Company;
-import model.Computer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import services.CompanyServices;
-import services.ComputerServices;
-import tools.Tools;
+import projet.dto.ComputerDto;
+import projet.mapper.Mapper;
+import projet.model.Company;
+import projet.model.Computer;
+import projet.service.CompanyServices;
+import projet.service.ComputerServices;
+import projet.validator.ComputerValidator;
 
 /**
  * Servlet implementation class AddComputer
@@ -35,6 +34,8 @@ public class AddComputer extends HttpServlet {
 	@Autowired
 	private ComputerServices computerServices;
 	
+	@Autowired
+	private Mapper mapper;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -63,56 +64,44 @@ public class AddComputer extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		boolean error=false;
+		String error;
 		String name =request.getParameter("name");
-		if (name==null || "".equals(name)) {
-			error=true;
-		}
-		
-		Calendar dateIntroduced = new GregorianCalendar();
 		String introduced=request.getParameter("introduced");
-		if (introduced!=null && !"".equals(introduced)) {
-			error=!(Tools.validDate(introduced));
-			if(!error) {
-				Tools.setCalendar(dateIntroduced, introduced);
-			}
-		} else {
-			dateIntroduced=null;
-		}
-		
-		Calendar dateDiscontinued = new GregorianCalendar();
 		String discontinued=request.getParameter("discontinued");
-		if(discontinued!=null&& !"".equals(discontinued)) {
-			error=!(Tools.validDate(discontinued));
-			if(!error) {
-				Tools.setCalendar(dateDiscontinued, discontinued);
-			}
-		} else {
-			dateDiscontinued=null;
-		}
-				
 		String idString =request.getParameter("company");
-		Company company=null;
-		if(idString!=null && !"null".equals(idString)) {
-			try {
-				int id=Integer.parseInt(idString);
-				String companyName=companyServices.getName(id);
-				
-				company = new Company(id,companyName);
-			} catch (NumberFormatException e) {
-			}
+		
+		ComputerDto computerDto=new ComputerDto(name,introduced,discontinued,idString);
+		
+		error=ComputerValidator.validate(computerDto);
+		
+		
+		if (error.equals("00000")) {
+			Computer computer=mapper.computerDtoToComputer(computerDto);
 			
-		} 
-		
-		
-		Computer computer=new Computer(name,dateIntroduced,dateDiscontinued,company);
-		
-		if (!error) {
+			companyServices.exist(computer.getCompany());
+			
 			computerServices.create(computer);
 			
-			response.sendRedirect("/computer-database/Dashboard");
+			response.sendRedirect("/computer-database/Dashboard?add=true");
 		} else {
-			response.sendRedirect("/computer-database/AddComputer");
+			request.setAttribute("computerName",name);
+			request.setAttribute("computerIntroduced",introduced);
+			request.setAttribute("computerDiscontinued",discontinued);
+			if(error.substring(4,5).equals("0")) {
+				request.setAttribute("companyId",idString);
+			} else {
+				request.setAttribute("companyId",0);
+			}
+			
+			ArrayList<Company> companyList = companyServices.getAll();
+			request.setAttribute("companyList", companyList);
+			
+			request.setAttribute("errorName",error.substring(1, 2));
+			request.setAttribute("errorIntroduced",error.substring(2, 3));
+			request.setAttribute("errorDiscontinued",error.substring(3, 4));
+			request.setAttribute("errorCompanyId",error.substring(4, 5));
+			getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
+			
 		}
 	}
 	

@@ -1,4 +1,4 @@
-package exceptions;
+package projet.exception;
 
 public class TransactionException extends RuntimeException{
 
@@ -6,7 +6,7 @@ public class TransactionException extends RuntimeException{
 
 	
 	public TransactionException(String message,Throwable e) {
-		super();
+		super(message,e);
 		this.setStackTrace(e.getStackTrace());
 	}
 	
