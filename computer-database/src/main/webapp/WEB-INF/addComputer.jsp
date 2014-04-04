@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="customTag" tagdir="/WEB-INF/tags/" %>
-<%@ taglib prefix="form" tagdir="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 
 <section id="main">
@@ -18,7 +18,7 @@
 			<customTag:ifError test="${errorName==1 }">
 				<label for="name" class="control-label col-sm-2">Computer name:</label>
 				<div class="col-xs-2">
-					<form:input class ="form-control " type="text" path="name" value="${computerName}" required/>
+					<form:input class ="form-control " path="name" />
 					<span class="help-block">Required</span>
 				</div>
 			</customTag:ifError>
@@ -26,14 +26,14 @@
 			<customTag:ifError test="${errorIntroduced==1 }">
 				<label for="introduced" class="control-label col-sm-2">Introduced date:</label>
 				<div class="col-xs-2">
-					<form:input type="text" path="dateIntroduced" class="datepicker form-control" value="${computerIntroduced}"/>
+					<form:input path="dateIntroduced" class="datepicker form-control" />
 				</div>
 			</customTag:ifError>
 			
 			<customTag:ifError test="${errorDiscontinued==1 }">
 				<label for="discontinued" class="control-label col-sm-2">Discontinued date:</label>
 				<div class="col-xs-2">
-					<form:input type="text" path="dateDiscontinued" class="datepicker form-control" value="${computerDiscontinued}"/>
+					<form:input path="dateDiscontinued" class="datepicker form-control" />
 				</div>
 			</customTag:ifError>
 			
@@ -42,15 +42,7 @@
 				<div class="col-xs-2">
 					<form:select path="company" class="form-control">
 						<form:option value="0">--</form:option>
-						<c:forEach var="company" items="${companyList}" >
-							<form:option 
-								value="${company.id}"
-								<c:if test="${company.id==companyId }">
-									selected="selected"
-								</c:if>
-								>${company.name }
-							</form:option>
-						</c:forEach>
+						<form:options  items="${companyList}" itemLabel="name" itemValue="id" />
 					</form:select>
 				</div>
 			</customTag:ifError>

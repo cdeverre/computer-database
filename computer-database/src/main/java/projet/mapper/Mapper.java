@@ -41,7 +41,7 @@ public class Mapper {
 			company = new Company(id,companyName);
 		}
 		
-		if (!"null".equals(computerDto.getId())) {
+		if (computerDto.getId()!=null && !"null".equals(computerDto.getId() )) {
 			return new Computer(Long.parseLong(computerDto.getId()),computerDto.getName(),dateIntroduced,dateDiscontinued,company);
 		} else {
 			return new Computer(computerDto.getName(),dateIntroduced,dateDiscontinued,company);

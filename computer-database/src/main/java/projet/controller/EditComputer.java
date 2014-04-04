@@ -3,10 +3,10 @@ package projet.controller;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +18,6 @@ import projet.model.Company;
 import projet.model.Computer;
 import projet.service.CompanyServices;
 import projet.service.ComputerServices;
-import projet.tool.Tools;
 import projet.validator.ComputerValidator;
 
 /**
@@ -46,19 +45,15 @@ public class EditComputer  {
 
     
     @RequestMapping(method=RequestMethod.GET)
-	protected String doGet(HttpServletRequest request, HttpServletResponse response) {
+	protected String doGet(HttpServletRequest request, ModelMap map) {
 		String stringid=request.getParameter("id");
 		long id = mapper.parseIdToInt(stringid);
 		Computer computer=computerServices.find(id);
-		request.setAttribute("computerName", computer.getName());
-		request.setAttribute("computerIntroduced", Tools.createStringFromCalendar(computer.getDateIntroduced()));
-		request.setAttribute("computerDiscontinued", Tools.createStringFromCalendar(computer.getDateDiscontinued()));
-		request.setAttribute("companyId", computer.getCompany().getId());
-		request.setAttribute("id", id);
-
+		ComputerDto computerDto= mapper.computerToComputerDto(computer);
 		
 		ArrayList<Company> companyList = companyServices.getAll();
-		request.setAttribute("companyList", companyList);
+		map.addAttribute("companyList", companyList);
+		map.addAttribute("computerDto", computerDto);
 		
 		return("editComputer");
 
@@ -67,15 +62,10 @@ public class EditComputer  {
 
     
     @RequestMapping(method=RequestMethod.POST)
-	protected ModelAndView doPost(HttpServletRequest request, HttpServletResponse response) {
-		String id=request.getParameter("id");
-		String error;
-		String name =request.getParameter("name");
-		String introduced=request.getParameter("introduced");
-		String discontinued=request.getParameter("discontinued");
-		String idString =request.getParameter("company");
-		
-		ComputerDto computerDto=new ComputerDto(id,name,introduced,discontinued,idString);
+	protected ModelAndView doPost(ComputerDto computerDto) {
+
+    	String error;
+	
 		
 		error=ComputerValidator.validate(computerDto);
 		
@@ -94,15 +84,8 @@ public class EditComputer  {
 			mav=new ModelAndView(new RedirectView("Dashboard?update=true"));
 		} else {
 			mav=new ModelAndView("editComputer");
-			mav.addObject("id",id);
-			mav.addObject("computerName",name);
-			mav.addObject("computerIntroduced",introduced);
-			mav.addObject("computerDiscontinued",discontinued);
-			if(error.substring(4,5).equals("0")) {
-				mav.addObject("companyId",idString);
-			} else {
-				mav.addObject("companyId",0);
-			}
+
+			mav.addObject("computerDto",computerDto);
 			
 			ArrayList<Company> companyList = companyServices.getAll();
 			mav.addObject("companyList", companyList);

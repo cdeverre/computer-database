@@ -22,7 +22,11 @@
 	<context:annotation-config />
 
 
-	<context:component-scan base-package="projet"/>
+	<context:component-scan base-package="projet.controller"/>
+	<context:component-scan base-package="projet.dao"/>
+	<context:component-scan base-package="projet.dto"/>
+	<context:component-scan base-package="projet.mapper"/>
+	<context:component-scan base-package="projet.service"/>
 	
 	<mvc:annotation-driven/>
 	<mvc:resources mapping="/js/**" location="/js/" />

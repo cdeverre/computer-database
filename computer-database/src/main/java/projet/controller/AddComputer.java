@@ -2,11 +2,9 @@ package projet.controller;
 
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,22 +40,17 @@ public class AddComputer  {
     }
 
     @RequestMapping(method=RequestMethod.GET)
-	protected String doGet(HttpServletRequest request, HttpServletResponse response)  {
-		ArrayList<Company> companyList = companyServices.getAll();
-		request.setAttribute("companyList", companyList);
-			
-		return("addComputer");
+	protected String doGet(ModelMap map)  {
+    	ArrayList<Company> companyList = companyServices.getAll();
+		map.addAttribute("companyList", companyList);
+		map.addAttribute("computerDto", new ComputerDto());
+		
+		return "addComputer";
 	}
 
     @RequestMapping(method=RequestMethod.POST)
-	protected ModelAndView doPost(HttpServletRequest request, HttpServletResponse response)  {
+	protected ModelAndView doPost(ComputerDto computerDto)  {
 		String error;
-		String name =request.getParameter("name");
-		String introduced=request.getParameter("introduced");
-		String discontinued=request.getParameter("discontinued");
-		String idString =request.getParameter("company");
-		
-		ComputerDto computerDto=new ComputerDto(name,introduced,discontinued,idString);
 		
 		error=ComputerValidator.validate(computerDto);
 		
@@ -73,14 +66,7 @@ public class AddComputer  {
 			mav=new ModelAndView(new RedirectView("Dashboard?add=true"));
 		} else {
 			mav=new ModelAndView("addComputer");
-			mav.addObject("computerName",name);
-			mav.addObject("computerIntroduced",introduced);
-			mav.addObject("computerDiscontinued",discontinued);
-			if(error.substring(4,5).equals("0")) {
-				mav.addObject("companyId",idString);
-			} else {
-				mav.addObject("companyId",0);
-			}
+			mav.addObject("computerDto",computerDto);
 			
 			ArrayList<Company> companyList = companyServices.getAll();
 			mav.addObject("companyList", companyList);
