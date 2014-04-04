@@ -8,11 +8,9 @@ public class PageWrapper {
 	
 	private int currentPage;
 	
-	private int numberOfPage;
+	private String orderByColumns;
 	
-	private String OrderByColumns;
-	
-	private boolean OrderByType;
+	private boolean orderByType;
 	
 	private String pattern;
 	
@@ -27,12 +25,24 @@ public class PageWrapper {
 		super();
 	}
 
-	public PageWrapper(int currentPage, int numberOfPage,String OrderByColumns, boolean OrderByType,String pattern) {
+	public PageWrapper(String currentPageString,String orderByColumns, String orderByTypeString,String pattern) {
+		int currentPage=1;
+		if(currentPageString!=null && currentPageString.matches("\\d+")) {
+			currentPage=Integer.parseInt(currentPageString);
+			currentPage=Math.max(currentPage, 1);
+		} 
 		this.currentPage=currentPage;
-		this.numberOfPage=numberOfPage;
-		this.OrderByColumns=OrderByColumns;
-		this.OrderByType=OrderByType;
-		this.setPattern(pattern);
+		if (orderByColumns==null) {
+			this.orderByColumns="name";
+		} else {
+			this.orderByColumns=orderByColumns;
+		}
+		this.orderByType=true;
+		if (orderByTypeString!=null && ("true".equals(orderByTypeString) || "false".equals(orderByTypeString))){
+			this.orderByType=Boolean.parseBoolean(orderByTypeString);
+		}
+		this.pattern=pattern;
+		
 	}
 
 	
@@ -58,33 +68,12 @@ public class PageWrapper {
 	}
 
 
-
-
-	/**
-	 * @return the numberOfPage
-	 */
-	public int getNumberOfPage() {
-		return numberOfPage;
-	}
-
-
-
-
-	/**
-	 * @param numberOfPage the numberOfPage to set
-	 */
-	public void setNumberOfPage(int numberOfPage) {
-		this.numberOfPage = numberOfPage;
-	}
-
-
-
-
+	
 	/**
 	 * @return the orderByColumns
 	 */
 	public String getOrderByColumns() {
-		return OrderByColumns;
+		return orderByColumns;
 	}
 
 
@@ -94,7 +83,7 @@ public class PageWrapper {
 	 * @param orderByColumns the orderByColumns to set
 	 */
 	public void setOrderByColumns(String orderByColumns) {
-		OrderByColumns = orderByColumns;
+		this.orderByColumns = orderByColumns;
 	}
 
 
@@ -103,8 +92,8 @@ public class PageWrapper {
 	/**
 	 * @return the orderByType
 	 */
-	public boolean isOrderByType() {
-		return OrderByType;
+	public boolean getOrderByType() {
+		return orderByType;
 	}
 
 
@@ -114,7 +103,7 @@ public class PageWrapper {
 	 * @param orderByType the orderByType to set
 	 */
 	public void setOrderByType(boolean orderByType) {
-		OrderByType = orderByType;
+		this.orderByType = orderByType;
 	}
 
 	/**

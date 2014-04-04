@@ -1,16 +1,16 @@
-package projet.servlet;
+package projet.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import projet.dto.ComputerDto;
 import projet.mapper.Mapper;
@@ -24,9 +24,9 @@ import projet.validator.ComputerValidator;
 /**
  * Servlet implementation class EditComputer
  */
-@WebServlet("/EditComputer")
-public class EditComputer extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("EditComputer")
+public class EditComputer  {
        
 	@Autowired
 	private ComputerServices computerServices;
@@ -37,24 +37,16 @@ public class EditComputer extends HttpServlet {
 	@Autowired
 	private Mapper mapper;
 	
-	 @Override
-	    public void init() throws ServletException {
-	    	super.init();
-	    	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext (this);
-	    }
 	 
 	 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public EditComputer() {
         super();
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    @RequestMapping(method=RequestMethod.GET)
+	protected String doGet(HttpServletRequest request, HttpServletResponse response) {
 		String stringid=request.getParameter("id");
 		long id = mapper.parseIdToInt(stringid);
 		Computer computer=computerServices.find(id);
@@ -68,15 +60,14 @@ public class EditComputer extends HttpServlet {
 		ArrayList<Company> companyList = companyServices.getAll();
 		request.setAttribute("companyList", companyList);
 		
-		getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
+		return("editComputer");
 
 		
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    @RequestMapping(method=RequestMethod.POST)
+	protected ModelAndView doPost(HttpServletRequest request, HttpServletResponse response) {
 		String id=request.getParameter("id");
 		String error;
 		String name =request.getParameter("name");
@@ -88,7 +79,7 @@ public class EditComputer extends HttpServlet {
 		
 		error=ComputerValidator.validate(computerDto);
 		
-		
+		ModelAndView mav;
 		if (error.equals("00000")) {
 
 			Computer computer=mapper.computerDtoToComputer(computerDto);
@@ -100,22 +91,28 @@ public class EditComputer extends HttpServlet {
  
 			computerServices.update(computer);
 			
-			response.sendRedirect("/computer-database/Dashboard");
+			mav=new ModelAndView(new RedirectView("Dashboard?update=true"));
 		} else {
-			request.setAttribute("computerName",name);
-			request.setAttribute("computerIntroduced",introduced);
-			request.setAttribute("computerDiscontinued",discontinued);
-			request.setAttribute("companyId",idString);
+			mav=new ModelAndView("editComputer");
+			mav.addObject("id",id);
+			mav.addObject("computerName",name);
+			mav.addObject("computerIntroduced",introduced);
+			mav.addObject("computerDiscontinued",discontinued);
+			if(error.substring(4,5).equals("0")) {
+				mav.addObject("companyId",idString);
+			} else {
+				mav.addObject("companyId",0);
+			}
 			
 			ArrayList<Company> companyList = companyServices.getAll();
-			request.setAttribute("companyList", companyList);
+			mav.addObject("companyList", companyList);
 			
-			request.setAttribute("errorName",error.substring(1, 2));
-			request.setAttribute("errorIntroduced",error.substring(2, 3));
-			request.setAttribute("errorDiscontinued",error.substring(3, 4));
-			request.setAttribute("errorCompanyId",error.substring(4, 5));
-			getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
+			mav.addObject("errorName",error.substring(1, 2));
+			mav.addObject("errorIntroduced",error.substring(2, 3));
+			mav.addObject("errorDiscontinued",error.substring(3, 4));
+			mav.addObject("errorCompanyId",error.substring(4, 5));
 		}
+		return mav;
 	}
 
 }

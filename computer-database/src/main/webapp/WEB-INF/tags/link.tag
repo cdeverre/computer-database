@@ -1,4 +1,3 @@
-
 <%@ attribute name="path" required="true" %>
 <%@ attribute name="text"  %>
 <%@ attribute name="preference" %>
@@ -12,3 +11,4 @@
 
 	<a ${preference} href="${path}?currentPage=${currentPage}&pattern=${pattern}&
 			orderByColumns=${orderByColumns}&orderByType=${orderByType}&${otherParameters}">${text}</a>
+			

@@ -34,7 +34,7 @@ public class Mapper {
 			dateDiscontinued=null;
 		}
 		Company company =null;
-		if (computerDto.getCompany()!=null && !"null".equals(computerDto.getCompany())) {
+		if (computerDto.getCompany()!=null && !"0".equals(computerDto.getCompany())) {
 			Long id=Long.parseLong(computerDto.getCompany());
 			String companyName=companyServices.getName(id);
 			
