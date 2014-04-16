@@ -1,5 +1,4 @@
 <%@ attribute name="path" required="true" %>
-<%@ attribute name="text"  %>
 <%@ attribute name="preference" %>
 <%@ attribute name="currentPage" %>
 <%@ attribute name="pattern" %>
@@ -10,5 +9,5 @@
 
 
 	<a ${preference} href="${path}?currentPage=${currentPage}&pattern=${pattern}&
-			orderByColumns=${orderByColumns}&orderByType=${orderByType}&${otherParameters}">${text}</a>
+			orderByColumns=${orderByColumns}&orderByType=${orderByType}&${otherParameters}"><jsp:doBody/></a>
 			

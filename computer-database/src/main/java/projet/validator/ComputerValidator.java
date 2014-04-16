@@ -1,69 +1,66 @@
 package projet.validator;
 
+
+import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
 import projet.dto.ComputerDto;
 import projet.tool.Tools;
 
-public class ComputerValidator {
+@Component
+public class ComputerValidator implements Validator{
 
+
+	@Autowired
+	private ReloadableResourceBundleMessageSource message;
 	
-	
-	public static String validate(ComputerDto computer) {
-		StringBuilder error=new StringBuilder();
+	@Override
+	public boolean supports(Class<?> arg0) {
+		return arg0.equals(ComputerDto.class);
+	}
+
+	@Override
+	public void validate(Object arg0, Errors error) {
+		ComputerDto computer=(ComputerDto) arg0;
 		
-		if(computer.getId()!=null && !"null".equals(computer.getId())) {
-			if ( !(computer.getId().matches("\\d+"))) {
-				error.append("1");
-			} else {
-				error.append("0");
-			}
-		} else {
-			error.append("0");
+		Locale locale=LocaleContextHolder.getLocale();
+		String pattern=message.getMessage("date.pattern", null, locale);
+		
+		if(computer.getId()!=null && !"null".equals(computer.getId()) && !(computer.getId().matches("\\d+"))) {
+			error.rejectValue("id", "error.computer.id");
 		}
 		
 		if (computer.getName()==null || "".equals(computer.getName())) {
-			error.append("1");
-		} else {
-			error.append("0");
+			error.rejectValue("name", "error.computer.name");
 		}
 		
-		if (computer.getDateIntroduced()!=null && !"".equals(computer.getDateIntroduced())) {
-			if (!Tools.validDate(computer.getDateIntroduced())) {
-				error.append("1");
-			} else {
-				error.append("0");
-			}
-		} else {
-			error.append("0");
+		if (computer.getDateIntroduced()!=null && !"".equals(computer.getDateIntroduced())
+			&& !Tools.validDate(computer.getDateIntroduced(),pattern)) {
+				error.rejectValue("dateIntroduced", "error.computer.introduced");
 		}
 		
-		if(computer.getDateDiscontinued()!=null&& !"".equals(computer.getDateDiscontinued())) {
-			if(!Tools.validDate(computer.getDateDiscontinued())) {
-				error.append("1");
-			} else {
-				error.append("0");
-			}
-		} else {
-			error.append("0");
+		if(computer.getDateDiscontinued()!=null&& !"".equals(computer.getDateDiscontinued())  
+			&& !Tools.validDate(computer.getDateDiscontinued(),pattern)) {
+				error.rejectValue("dateDiscontinued", "error.computer.discontinued");
 		}
 		
-		if(computer.getCompany()!=null && !"0".equals(computer.getCompany())) {
-			if ( !(computer.getCompany().matches("\\d+"))) {
-				error.append("1");
-			} else {
-				error.append("0");
-			}
-		}  else {
-			error.append("0");
+		if(computer.getCompany()!=null && !"0".equals(computer.getCompany()) && !(computer.getCompany().matches("\\d+"))) {
+			error.rejectValue("company", "error.computer.company");
 		}
-		return error.toString();
 	}
 	
-	public static boolean idIsValid(String id) {
-		boolean res=false;
-		if(id!=null) {
-			res=(id.matches("\\d+")) ;
-		}
-		return res;
-	}
+	
+
+
+	
+
+
+
 
 }

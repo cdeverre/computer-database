@@ -4,39 +4,43 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="customTag" tagdir="/WEB-INF/tags/" %>
+<%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<spring:message code="date.pattern" var="date_pattern"/>
 
 <section id="main">
-	<h1 id="homeTitle">${numberOfComputer} Computers found</h1>
+	<h1 id="homeTitle">${numberOfComputer} <spring:message code="computers_found"/> </h1>
 	<div id="actions">
 		<form action="Dashboard" method="GET">
-			<input type="search" id="searchbox" name="pattern" value="${page.pattern}" placeholder="Search name">
-			<input id="searchsubmit" value="Filter by name" class="btn btn-primary" type="submit">
+			<input type="search" id="searchbox" name="pattern" value="${page.pattern}" 
+				placeholder="<spring:message code="search.text"/>">
+			<input id="searchsubmit" value="<spring:message code="search.submit"/>" class="btn btn-primary" type="submit">
 		</form>
-		<customTag:link path="AddComputer" text='<span class="glyphicon glyphicon-plus"></span>
-			AddComputer' preference='class="btn btn-success" id="add"'
-			
-			
-		/>
+		<customTag:link path="AddComputer" preference='class="btn btn-success" id="add"'> 
+			<span class="glyphicon glyphicon-plus"></span>
+			<spring:message code="add"/>
+		</customTag:link>
 	</div>
 
 	<c:if test="${add==true}">
 		<div class="alert alert-success alert-dismissable">
 		  <button type="button" class="close" data-dismiss="alert" >&times;</button>
-			Good job, you add a computer!
+			<spring:message code="success.add"/>
 		</div>
 	</c:if>
 	
 	<c:if test="${update==true}">
 		<div class="alert alert-success alert-dismissable">
 		  <button type="button" class="close" data-dismiss="alert" >&times;</button>
-			Update completed
+			<spring:message code="success.update"/>
 		</div>
 	</c:if>
 	
 	<c:if test="${delete==true }">
 		<div class="alert alert-success alert-dismissable">
 		  <button type="button" class="close" data-dismiss="alert" >&times;</button>
-			Delete completed
+			<spring:message code="success.delete"/>
 		</div>
 	</c:if>
 	
@@ -47,47 +51,54 @@
 				<tr>
 					<!-- Variable declarations for passing labels as parameters -->
 					<!-- Table header for Computer Name -->
-					<th class="col-md-5">Computer Name  
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
-							 orderByColumns="name" orderByType="true"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"/>
+					<th class="col-md-5"><spring:message code="computer.name"/> 
+						<customTag:link path="Dashboard" orderByColumns="name" orderByType="true"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-up"></span>
+						</customTag:link>
 							 
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
-							 orderByColumns="name" orderByType="false"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"/>
+						<customTag:link path="Dashboard" orderByColumns="name" orderByType="false"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-down"></span>
+						</customTag:link>
 						
 					</th >
-					<th class="col-md-2">Introduced Date  
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
-							 orderByColumns="introduced" orderByType="true"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"/>
+					<th class="col-md-2"><spring:message code="computer.introduced"/>  
+						<customTag:link path="Dashboard" orderByColumns="introduced" orderByType="true"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-up"></span>
+						</customTag:link>
 							 
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
-							 orderByColumns="introduced" orderByType="false"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"/>
+						<customTag:link path="Dashboard" orderByColumns="introduced" orderByType="false"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-down"></span>
+						</customTag:link>
 					</th>
 					<!-- Table header for Discontinued Date -->
-					<th class="col-md-2">Discontinued Date  
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
-							 orderByColumns="discontinued" orderByType="true"
-							currentPage="${page.currentPage}" pattern="${page.pattern}" />
+					<th class="col-md-2"> <spring:message code="computer.discontinued"/> 
+						<customTag:link path="Dashboard" orderByColumns="discontinued" orderByType="true"
+							currentPage="${page.currentPage}" pattern="${page.pattern}" >
+							<span class="glyphicon glyphicon-chevron-up"></span>
+						</customTag:link>
 							 
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
-							 orderByColumns="discontinued" orderByType="false"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"/>
+						<customTag:link path="Dashboard" orderByColumns="discontinued" orderByType="false"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-down"></span>
+						</customTag:link>
 					</th>
 					<!-- Table header for Company -->
-					<th class="col-md-2">Company  
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-up"></span>'
-							 orderByColumns="company_id" orderByType="true"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"/>
+					<th class="col-md-2"><spring:message code="computer.company"/>  
+						<customTag:link path="Dashboard" orderByColumns="company_id" orderByType="true"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-up"></span>
+						</customTag:link>
 							 
-						<customTag:link path="Dashboard" text='<span class="glyphicon glyphicon-chevron-down"></span>'
-							 orderByColumns="company_id" orderByType="false"
-							 currentPage="${page.currentPage}" pattern="${page.pattern}"
-							/>
+						<customTag:link path="Dashboard" orderByColumns="company_id" orderByType="false"
+							 currentPage="${page.currentPage}" pattern="${page.pattern}">
+							 <span class="glyphicon glyphicon-chevron-down"></span>
+						</customTag:link>
 					</th>
-					<th class="col-md-1">Delete</th>
+					<th class="col-md-1"><spring:message code="computer.delete"/></th>
 				</tr>
 			</thead>
 			
@@ -96,19 +107,29 @@
 				<c:forEach var="computer" items="${computerList}" >
 					<tr>
 						<td>
-							<customTag:link path="EditComputer" otherParameters="id=${computer.id }" text="${computer.name }"
+							<customTag:link path="EditComputer" otherParameters="id=${computer.id }" 
 							currentPage="${page.currentPage}" pattern="${page.pattern} "
-							orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }"
-							/>
+							orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }">
+								${computer.name }
+							</customTag:link>
 						</td>
-						<td><fmt:formatDate type="date" value="${computer.dateIntroduced.getTime()}" /></td>
-						<td><fmt:formatDate type="date" value="${computer.dateDiscontinued.getTime()}" /></td>
+						<td>
+							<joda:format value="${computer.dateIntroduced}" 
+							pattern="${date_pattern }"/> 
+						</td>
+						<td>
+							<joda:format value="${computer.dateDiscontinued}" 
+							pattern="${date_pattern }"/>
+						</td>
 						<td>${computer.company.name}</td>
-						<td><customTag:link path="DeleteComputer" otherParameters="id=${computer.id }" 
-							text='<span class="glyphicon glyphicon-trash"></span> Delete'
+						<td>
+							<customTag:link path="DeleteComputer" otherParameters="id=${computer.id }" 
 							preference='class="btn btn-danger" id="delete"'
 							currentPage="${page.currentPage}" pattern="${page.pattern}"
-							orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }"/>
+							orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }">
+								<span class="glyphicon glyphicon-trash"></span> 
+								<spring:message code="computer.delete"/>
+							</customTag:link>
 						</td>
 					</tr>
 				</c:forEach>

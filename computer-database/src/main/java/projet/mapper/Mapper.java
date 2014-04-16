@@ -1,16 +1,19 @@
 package projet.mapper;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Locale;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 
 import projet.dto.ComputerDto;
 import projet.model.Company;
 import projet.model.Computer;
 import projet.service.CompanyServices;
-import projet.tool.Tools;
 
 @Component
 public class Mapper {
@@ -18,18 +21,27 @@ public class Mapper {
 	@Autowired
 	private CompanyServices companyServices;
 	
+	@Autowired
+	private ReloadableResourceBundleMessageSource message;
+	
 	
 	public Computer computerDtoToComputer(ComputerDto computerDto) {
-		Calendar dateIntroduced= new GregorianCalendar();
+		
+		Locale locale=LocaleContextHolder.getLocale();
+		String pattern=message.getMessage("date.pattern", null, locale);
+		
+		DateTimeFormatter dtf= DateTimeFormat.forPattern(pattern);
+		
+		DateTime dateIntroduced;
 		if (computerDto.getDateIntroduced()!=null && !"".equals(computerDto.getDateIntroduced())) {
-			Tools.setCalendar(dateIntroduced, computerDto.getDateIntroduced());
+			dateIntroduced = dtf.parseDateTime(computerDto.getDateIntroduced());
 		} else {
 			dateIntroduced=null;
 		}
 		
-		Calendar dateDiscontinued= new GregorianCalendar();
+		DateTime dateDiscontinued;
 		if (computerDto.getDateDiscontinued()!=null && !"".equals(computerDto.getDateDiscontinued())) {
-			Tools.setCalendar(dateDiscontinued, computerDto.getDateDiscontinued());
+			dateDiscontinued = dtf.parseDateTime(computerDto.getDateDiscontinued());
 		} else {
 			dateDiscontinued=null;
 		}
@@ -50,10 +62,13 @@ public class Mapper {
 	
 	
 	public ComputerDto computerToComputerDto(Computer computer) {
+		Locale locale=LocaleContextHolder.getLocale();
+		String pattern=message.getMessage("date.pattern", null, locale);
+		
 		String id=Long.toString(computer.getId());
 		String name= computer.getName();
-		String introduced = Tools.createStringFromCalendar(computer.getDateIntroduced());
-		String discontinued = Tools.createStringFromCalendar(computer.getDateDiscontinued());
+		String introduced = computer.getDateIntroduced().toString(pattern);
+		String discontinued = computer.getDateDiscontinued().toString(pattern);
 		String company_id = Long.toString(computer.getCompany().getId());
 		
 		return new ComputerDto(id,name,introduced,discontinued,company_id);

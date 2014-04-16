@@ -12,6 +12,20 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 	">
+
+	
+	<context:annotation-config />
+
+	<context:component-scan base-package="projet.controller"/>
+	<context:component-scan base-package="projet.dao"/>
+	<context:component-scan base-package="projet.mapper"/>
+	<context:component-scan base-package="projet.service"/>
+	<context:component-scan base-package="projet.validator"/>
+	
+	<mvc:resources mapping="/js/**" location="/js/" />
+	<mvc:resources mapping="/css/**" location="/css/" />
+	
+	
 	
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
 
@@ -19,17 +33,38 @@
 	p:suffix=".jsp"/>
 	
 	
-	<context:annotation-config />
-
-
-	<context:component-scan base-package="projet.controller"/>
-	<context:component-scan base-package="projet.dao"/>
-	<context:component-scan base-package="projet.dto"/>
-	<context:component-scan base-package="projet.mapper"/>
-	<context:component-scan base-package="projet.service"/>
+	<bean id="localeResolver"
+	    class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+	    <property name="defaultLocale" value="en"/>
+	</bean>
+ 
+	<bean id="localeChangeInterceptor"
+	    class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+	    <property name="paramName" value="language" />
+	</bean>
+	 
+	 
+	<bean id="handlerMapping"
+	    class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+	    <property name="interceptors">
+	        <ref bean="localeChangeInterceptor" />
+	    </property>
+	</bean>
+ 
+  
+ 	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="classpath:message" />
+	</bean>
 	
-	<mvc:annotation-driven/>
-	<mvc:resources mapping="/js/**" location="/js/" />
-	<mvc:resources mapping="/css/**" location="/css/" />
+<!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
+<!-- 		<property name="url" value="jdbc:mysql://localhost/computer-database-db?zeroDateTimeBehavior=convertToNull" /> -->
+<!-- 		<property name="username" value="root" /> -->
+<!-- 		<property name="password" value="toor" /> -->
+<!-- 	</bean> -->
+	
+	
+	
 	
 </beans>

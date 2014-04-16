@@ -7,10 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,13 +60,13 @@ public class ComputerDao {
 		
 			stmt.setString(1, computer.getName());
 			if (computer.getDateIntroduced()!=null) {
-				stmt.setLong(2,computer.getDateIntroduced().getTimeInMillis()/1000);
+				stmt.setLong(2,computer.getDateIntroduced().getMillis()/1000);
 			} else {
 				stmt.setNull(2, Types.NULL);
 			}
 			
 			if (computer.getDateDiscontinued()!=null) {
-				stmt.setLong(3,computer.getDateDiscontinued().getTimeInMillis()/1000);
+				stmt.setLong(3,computer.getDateDiscontinued().getMillis()/1000);
 			} else {
 				stmt.setNull(3, Types.NULL);
 			}
@@ -113,13 +112,13 @@ public class ComputerDao {
 			
 			stmt.setString(1, computer.getName());
 			if (computer.getDateIntroduced()!=null) {
-				stmt.setLong(2,computer.getDateIntroduced().getTimeInMillis()/1000);
+				stmt.setLong(2,computer.getDateIntroduced().getMillis()/1000);
 			} else {
 				stmt.setNull(2, Types.NULL);
 			}
 			
 			if (computer.getDateDiscontinued()!=null) {
-				stmt.setLong(3,computer.getDateDiscontinued().getTimeInMillis()/1000);
+				stmt.setLong(3,computer.getDateDiscontinued().getMillis()/1000);
 			} else {
 				stmt.setNull(3, Types.NULL);
 			}
@@ -215,15 +214,13 @@ public class ComputerDao {
 			while(rs.next()) {
 				long id=rs.getLong(1);
 				String name=rs.getString(2);
-				Calendar introduced=null;
+				DateTime introduced=null;
 				if(rs.getDate(3)!=null) {
-					introduced=new GregorianCalendar();
-					introduced.setTime(rs.getDate(3));
+					introduced=new DateTime(rs.getDate(3));
 				}
-				Calendar discontinued=null;
+				DateTime discontinued=null;
 				if(rs.getDate(4)!=null) {
-					discontinued=new GregorianCalendar();
-					discontinued.setTime(rs.getDate(4));
+					discontinued=new DateTime(rs.getDate(4));
 				}
 				long companyId = rs.getLong(5);
 				
@@ -327,15 +324,13 @@ public class ComputerDao {
 			
 			if(rs.next()) {
 				String name=rs.getString(2);
-				Calendar introduced=null;
+				DateTime introduced=null;
 				if(rs.getDate(3)!=null) {
-					introduced=new GregorianCalendar();
-					introduced.setTime(rs.getDate(3));
+					introduced=new DateTime(rs.getDate(3));
 				}
-				Calendar discontinued=null;
+				DateTime discontinued=null;
 				if(rs.getDate(4)!=null) {
-					discontinued=new GregorianCalendar();
-					discontinued.setTime(rs.getDate(4));
+					discontinued=new DateTime(rs.getDate(4));
 				}
 				long companyId = rs.getLong(5);
 				String companyName=null;
@@ -393,15 +388,13 @@ public class ComputerDao {
 			while(rs.next()) {
 				long id=rs.getLong(1);
 				String name=rs.getString(2);
-				Calendar introduced=null;
+				DateTime introduced=null;
 				if(rs.getDate(3)!=null) {
-					introduced=new GregorianCalendar();
-					introduced.setTime(rs.getDate(3));
+					introduced=new DateTime(rs.getDate(3));
 				}
-				Calendar discontinued=null;
+				DateTime discontinued=null;
 				if(rs.getDate(4)!=null) {
-					discontinued=new GregorianCalendar();
-					discontinued.setTime(rs.getDate(4));
+					discontinued=new DateTime(rs.getDate(4));
 				}
 				long companyId = rs.getLong(5);
 				

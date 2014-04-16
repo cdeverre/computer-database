@@ -1,20 +1,20 @@
 package projet.model;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
 
 public class Computer {
 	
 	private long id;
 	private String name;
-	private Calendar DateIntroduced;
-	private Calendar DateDiscontinued;
+	private DateTime DateIntroduced;
+	private DateTime DateDiscontinued;
 	private Company company;
 	
 	
 	public Computer() {
 		super();
 	}
-	public Computer(long id,String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
+	public Computer(long id,String name, DateTime DateIntroduced,DateTime DateDiscontinued, Company compagny) {
 		this.id=id;
 		this.name=name;
 		this.DateIntroduced=DateIntroduced;
@@ -22,7 +22,7 @@ public class Computer {
 		this.company=compagny; 
 	}
 	
-	public Computer(String name, Calendar DateIntroduced,Calendar DateDiscontinued, Company compagny) {
+	public Computer(String name, DateTime DateIntroduced,DateTime DateDiscontinued, Company compagny) {
 		this.id=-1;
 		this.name=name;
 		this.DateIntroduced=DateIntroduced;
@@ -61,28 +61,28 @@ public class Computer {
 	/**
 	 * @return the DateIntroduced
 	 */
-	public Calendar getDateIntroduced() {
+	public DateTime getDateIntroduced() {
 		return DateIntroduced;
 	}
 	
 	/**
 	 * @param Dateintroduced the DateIntroduced to set
 	 */
-	public void setDateIntroduced(Calendar Dateintroduced) {
+	public void setDateIntroduced(DateTime Dateintroduced) {
 		this.DateIntroduced = Dateintroduced;
 	}
 	
 	/**
 	 * @return the DateDiscontinued
 	 */
-	public Calendar getDateDiscontinued() {
+	public DateTime getDateDiscontinued() {
 		return DateDiscontinued;
 	}
 	
 	/**
 	 * @param Datediscontinued the DateDiscontinued to set
 	 */
-	public void setDateDiscontinued(Calendar Datediscontinued) {
+	public void setDateDiscontinued(DateTime Datediscontinued) {
 		this.DateDiscontinued = Datediscontinued;
 	}
 	

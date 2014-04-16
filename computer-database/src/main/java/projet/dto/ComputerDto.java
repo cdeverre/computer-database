@@ -1,11 +1,28 @@
 package projet.dto;
 
+import javax.validation.constraints.Digits;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 public class ComputerDto {
 	
+	@NotEmpty
 	private String name;
+	
+	
 	private String dateIntroduced;
+	
+	
 	private String dateDiscontinued;
+	
+	
+	@Digits(fraction = 255, integer = 255)
+	private String company;
+	
+	@Digits(fraction = 255, integer = 255)
+	private String id;
+	
+	
 	/**
 	 * @return the dateIntroduced
 	 */
@@ -52,10 +69,6 @@ public class ComputerDto {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-
-	private String company;
-	private String id;
 	
 	
 	public ComputerDto() {

@@ -2,9 +2,14 @@ package projet.controller;
 
 import java.util.ArrayList;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,11 +39,22 @@ public class AddComputer  {
 	@Autowired
 	private Mapper mapper;
     
+	@Autowired 
+	private ComputerValidator validator;
 
+
+	
     public AddComputer() {
         super();
     }
 
+    
+    @InitBinder
+    private void initBinder(WebDataBinder binder) {
+    	binder.setValidator(validator);
+    }
+    
+    
     @RequestMapping(method=RequestMethod.GET)
 	protected String doGet(ModelMap map)  {
     	ArrayList<Company> companyList = companyServices.getAll();
@@ -49,14 +65,11 @@ public class AddComputer  {
 	}
 
     @RequestMapping(method=RequestMethod.POST)
-	protected ModelAndView doPost(ComputerDto computerDto)  {
-		String error;
+	protected ModelAndView doPost(@Valid ComputerDto computerDto , BindingResult result)  {
+    	
+    	ModelAndView mav;
 		
-		error=ComputerValidator.validate(computerDto);
-		
-		ModelAndView mav;
-		
-		if (error.equals("00000")) {
+		if (!result.hasErrors()) {
 			Computer computer=mapper.computerDtoToComputer(computerDto);
 			
 			companyServices.exist(computer.getCompany());
@@ -65,16 +78,13 @@ public class AddComputer  {
 			
 			mav=new ModelAndView(new RedirectView("Dashboard?add=true"));
 		} else {
+			
 			mav=new ModelAndView("addComputer");
 			mav.addObject("computerDto",computerDto);
 			
 			ArrayList<Company> companyList = companyServices.getAll();
 			mav.addObject("companyList", companyList);
-			
-			mav.addObject("errorName",error.substring(1, 2));
-			mav.addObject("errorIntroduced",error.substring(2, 3));
-			mav.addObject("errorDiscontinued",error.substring(3, 4));
-			mav.addObject("errorCompanyId",error.substring(4, 5));
+
 			
 		}
 		return mav;

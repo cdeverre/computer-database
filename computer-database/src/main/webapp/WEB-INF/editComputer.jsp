@@ -6,49 +6,56 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="customTag" tagdir="/WEB-INF/tags/" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 
 <section id="main">
 
-	<h1>Edit Computer</h1>
+	<h1><spring:message code="edit_computer"/></h1>
 	
 	<form:form action="EditComputer" method="POST" class ="form-horizontal form-validation" commandName="computerDto">
 			<form:hidden path="id" />
-			
-			<customTag:ifError test="${errorName==1 }">
-				<label for="name" class="control-label col-sm-2">Computer name:</label>
+			<div class="form-group ">
+				<label for="name" class="control-label col-sm-2"><spring:message code="computer.name"/>:</label>
 				<div class="col-xs-2">
 					<form:input class ="form-control " path="name" />
-					<span class="help-block">Required</span>
+					<span class="help-block"><spring:message code="required"/></span>
 				</div>
-			</customTag:ifError>
+				<form:errors path="name"/>
+			</div>
 	
-			<customTag:ifError test="${errorIntroduced==1 }">
-				<label for="introduced" class="control-label col-sm-2">Introduced date:</label>
+			<div class="form-group ">
+				<label for="introduced" class="control-label col-sm-2"><spring:message code="computer.introduced"/>:</label>
 				<div class="col-xs-2">
 					<form:input path="dateIntroduced" class="datepicker form-control" />
 				</div>
-			</customTag:ifError>
+				<form:errors path="dateIntroduced"/>
+			</div>
 			
-			<customTag:ifError test="${errorDiscontinued==1 }">
-				<label for="discontinued" class="control-label col-sm-2">Discontinued date:</label>
+			<div class="form-group ">
+				<label for="discontinued" class="control-label col-sm-2"><spring:message code="computer.discontinued"/>:</label>
 				<div class="col-xs-2">
 					<form:input path="dateDiscontinued" class="datepicker form-control" />
 				</div>
-			</customTag:ifError>
+				<form:errors path="dateDiscontinued"/>
+			</div>
 			
-			<customTag:ifError test="${errorCompanyId==1 }">
-				<label for="company" class="control-label col-sm-2">Company Name:</label>
+			<div class="form-group ">
+				<label for="company" class="control-label col-sm-2"><spring:message code="computer.company"/>:</label>
 				<div class="col-xs-2">
 					<form:select path="company" class="form-control">
 						<form:option value="0">--</form:option>
 						<form:options  items="${companyList}" itemLabel="name" itemValue="id" />
 					</form:select>
 				</div>
-			</customTag:ifError>
-			
+				<form:errors path="company"/>
+			</div>
+	
+		
 		<div class="form-group control-label col-xs-4">
-			<input type="submit" value="Edit" class="btn btn-success">
-			or <a href="Dashboard" class="btn btn-danger">Cancel</a>
+			<input type="submit" value="<spring:message code="edit"/>" class="btn btn-success ">
+			<spring:message code="or"/>
+			<a href="Dashboard" class="btn btn-danger"><spring:message code="cancel"/></a>
 		</div>
 	</form:form>
 </section>
