@@ -13,7 +13,10 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
+
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import projet.exception.TransactionException;
 import projet.model.Company;
@@ -28,8 +31,9 @@ public class ComputerDao {
     
     public static final int LIMIT=13;
 
+    
     @Autowired
-    private ConnectionFactory connectionFactory;
+	private BoneCPDataSource boneCP;
 	
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
@@ -47,7 +51,7 @@ public class ComputerDao {
 	public void create(Computer computer) throws TransactionException  {
 		
 			
-		Connection connection = connectionFactory.getConnection();
+		Connection connection=DataSourceUtils.getConnection(boneCP);
 		
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
@@ -92,12 +96,12 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
+			ConnectionFactory.close( rs, stmt);
 		}
 	}
 	
 	public void update(Computer computer) throws TransactionException {
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 
@@ -136,7 +140,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to update a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
+			ConnectionFactory.close( rs, stmt);
 		}
 		
 	}
@@ -145,7 +149,7 @@ public class ComputerDao {
 	
 	
 	public void delete(long id) throws TransactionException {
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 
@@ -164,7 +168,7 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to delete a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
+			ConnectionFactory.close( rs, stmt);
 		}
 		
 	}
@@ -173,7 +177,7 @@ public class ComputerDao {
 	
 	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
 		ArrayList<Computer> result = new ArrayList<Computer>();
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -198,7 +202,7 @@ public class ComputerDao {
 			}
 			query.append(" LIMIT ? OFFSET ? ");
 			
-			connectionFactory.close( rs, stmt);
+			ConnectionFactory.close( rs, stmt);
 			
 			logger.debug("Creating a statement");
 			stmt = connection.prepareStatement(query.toString());
@@ -231,15 +235,15 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close( rs, stmt);
+			
 		}
 		return result;
 	}
 	
 	public int count() {
 		int res = 0;
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -258,15 +262,15 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close( rs, stmt);
+			
 		}
 		return res;
 	}
 	
 	public int count(String pattern) {
 		int res = 0;
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -294,15 +298,15 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close( rs, stmt);
+			
 		}
 		return res;
 	}
 	
 	public Computer find(long id) {
 		Computer res=null;
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -334,7 +338,7 @@ public class ComputerDao {
 				}
 				long companyId = rs.getLong(5);
 				String companyName=null;
-				connectionFactory.close( rs, stmt);
+				ConnectionFactory.close( rs, stmt);
 				
 				stmt=connection.prepareStatement(query);
 				rs=stmt.executeQuery("SELECT company.name from company company where company.id="+companyId);
@@ -346,8 +350,8 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close( rs, stmt);
+			
 		}
 		return res;
 	}
@@ -356,7 +360,7 @@ public class ComputerDao {
 	
 	public ArrayList<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType) {
 		ArrayList<Computer> result = new ArrayList<Computer>();
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		PreparedStatement stmt=null;
 		try {
@@ -405,8 +409,8 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close( rs, stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close( rs, stmt);
+			
 		}
 		return result;
 		

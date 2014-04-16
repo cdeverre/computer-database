@@ -6,28 +6,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import projet.dao.ComputerDao;
-import projet.dao.ConnectionFactory;
 import projet.dao.LogDao;
 import projet.exception.ComputerNonexistentException;
-import projet.exception.TransactionException;
 import projet.model.Computer;
 
 @Service
+@Transactional
 public class ComputerServices {
 	
 	
 	private static Logger logger = LoggerFactory.getLogger(ComputerServices.class);
 	
-	@Autowired
-	private ConnectionFactory connectionFactory;
 	
 	@Autowired
 	private ComputerDao computerDao;
 	
 	@Autowired
 	private LogDao logDao;
+	
 	
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
@@ -42,54 +41,34 @@ public class ComputerServices {
 	/* ***               Methods                         *** */
 	/* *******************************************************/
 	
+	@Transactional(readOnly=false)
 	public void create(Computer computer) {
-		connectionFactory.startTransaction();
-		try {
-			computerDao.create(computer);
-			logDao.insertLogCreate(computer.getId());
-			
-			connectionFactory.commitTransaction();
-			logger.debug("Computer created succesfully");
-		} catch (TransactionException e) {
-			connectionFactory.rollbackTransaction();
-			throw e;
-		} finally {
-			connectionFactory.closeConnection();
-		}
+		computerDao.create(computer);
+		logDao.insertLog(computer.getId(),"Creating");
+		
+		logger.debug("Computer created succesfully");
 	}
 	
+	
+	@Transactional(readOnly=false)
 	public void update(Computer computer) {
-		connectionFactory.startTransaction();
-		try {
-			computerDao.update(computer);
-			logDao.insertLogUpdate(computer.getId());
-			connectionFactory.commitTransaction();
-			logger.debug("Computer updated succesfully");
-		} catch (TransactionException e) {
-			connectionFactory.rollbackTransaction();
-			throw e;
-		}  finally {
-			connectionFactory.closeConnection();
-		}
+		computerDao.update(computer);
+		logDao.insertLog(computer.getId(),"Updating");
+			
+		logger.debug("Computer updated succesfully");
 		
 	}
 
-	
+	@Transactional(readOnly=false)
 	public void delete(long id) {
-		connectionFactory.startTransaction();
-		try {
+	
 			computerDao.delete(id);
-			logDao.insertLogDelete(id);
-			connectionFactory.commitTransaction();
+			logDao.insertLog(id,"Deleting");
+
 			logger.debug("Computer deleted succesfully");
-		} catch (TransactionException e) {
-			connectionFactory.rollbackTransaction();
-			throw e;
-		}  finally {
-			connectionFactory.closeConnection();
-		}
 	}
 		
+	@Transactional(readOnly=true)
 	public Computer find(long id) {
 		Computer c=computerDao.find(id);
 		if (c==null) {
@@ -98,27 +77,28 @@ public class ComputerServices {
 		return (computerDao.find(id));
 	}
 	
+	@Transactional(readOnly=true)
 	public int count() {
 		return (computerDao.count());
 	}
 
-
+	@Transactional(readOnly=true)
 	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
 		return (computerDao.getAllPagination(currentPage,orderByColumns, orderByType));
 	}
 
-
+	@Transactional(readOnly=true)
 	public int getNumberOfPage(int count) {
 		return (int)Math.ceil((double)count/(double)ComputerDao.LIMIT);
 	}
 
-
+	@Transactional(readOnly=true)
 	public ArrayList<Computer> search(String pattern, int currentPage,String orderByColumns,boolean orderByType) {
 		return computerDao.search(pattern,currentPage,orderByColumns,orderByType);
 
 	}
 
-
+	@Transactional(readOnly=true)
 	public int count(String pattern) {
 		return (computerDao.count(pattern));
 	}

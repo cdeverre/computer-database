@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
+
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import projet.exception.TransactionException;
 import projet.model.Company;
@@ -19,9 +22,10 @@ public class CompanyDao {
 
     private Logger logger = LoggerFactory.getLogger(CompanyDao.class);
 
-    @Autowired
-    private ConnectionFactory connectionFactory;
 
+    @Autowired
+   	private BoneCPDataSource boneCP;
+    
 	/* *******************************************************/
 	/* ***               Constructors                    *** */
 	/* *******************************************************/
@@ -38,7 +42,7 @@ public class CompanyDao {
 	
 	public ArrayList<Company> getAll() {
 		ArrayList<Company> result = new ArrayList<Company>();
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		Statement stmt=null;
 		try {
@@ -64,15 +68,14 @@ public class CompanyDao {
 			logger.error("SQL error when getting the list of company");
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close(rs,stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close(rs,stmt);
 		}
 		return result;
 	}
 	
 	public String getName(long id) {
 		String res=null;
-		Connection connection = connectionFactory.getConnection();
+		Connection connection = DataSourceUtils.getConnection(boneCP);
 		ResultSet rs=null;
 		Statement stmt=null;
 		try{
@@ -92,8 +95,7 @@ public class CompanyDao {
 			logger.error("SQL error when getting a company by his id");
 			throw new TransactionException("SQL Error when trying to create a computer",e);
 		} finally {
-			connectionFactory.close(rs,stmt);
-			connectionFactory.closeConnection();
+			ConnectionFactory.close(rs,stmt);
 		}
 		return res;
 		

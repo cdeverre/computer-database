@@ -14,12 +14,10 @@
 	">
 
 	
-	<context:annotation-config />
+	<mvc:annotation-driven />
 
 	<context:component-scan base-package="projet.controller"/>
-	<context:component-scan base-package="projet.dao"/>
 	<context:component-scan base-package="projet.mapper"/>
-	<context:component-scan base-package="projet.service"/>
 	<context:component-scan base-package="projet.validator"/>
 	
 	<mvc:resources mapping="/js/**" location="/js/" />
@@ -27,7 +25,6 @@
 	
 	
 	
-	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/" 
 	p:suffix=".jsp"/>
@@ -56,14 +53,6 @@
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basename" value="classpath:message" />
 	</bean>
-	
-<!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
-<!-- 		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> -->
-<!-- 		<property name="url" value="jdbc:mysql://localhost/computer-database-db?zeroDateTimeBehavior=convertToNull" /> -->
-<!-- 		<property name="username" value="root" /> -->
-<!-- 		<property name="password" value="toor" /> -->
-<!-- 	</bean> -->
-	
 	
 	
 	
