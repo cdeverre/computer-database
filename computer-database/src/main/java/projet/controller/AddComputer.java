@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import projet.dto.ComputerDto;
+import projet.exception.TransactionException;
 import projet.mapper.Mapper;
 import projet.model.Company;
 import projet.model.Computer;
@@ -90,5 +92,11 @@ public class AddComputer  {
 		return mav;
 	}
 	
+    @ExceptionHandler(TransactionException.class)
+	public String handleAllException(Exception ex) {
+ 
+		return "error-pages/transactionError";
+ 
+	}
 
 }

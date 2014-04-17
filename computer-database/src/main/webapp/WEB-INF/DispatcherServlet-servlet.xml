@@ -14,7 +14,7 @@
 	">
 
 	
-	<mvc:annotation-driven />
+	<context:annotation-config />
 
 	<context:component-scan base-package="projet.controller"/>
 	<context:component-scan base-package="projet.mapper"/>
@@ -24,7 +24,7 @@
 	<mvc:resources mapping="/css/**" location="/css/" />
 	
 	
-	
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/" 
 	p:suffix=".jsp"/>

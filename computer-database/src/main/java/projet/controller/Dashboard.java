@@ -8,9 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import projet.exception.TransactionException;
 import projet.model.Computer;
 import projet.service.ComputerServices;
 import projet.wrapper.PageWrapper;
@@ -78,6 +80,14 @@ public class Dashboard  {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 		this.doGet(request, response);
+	}
+	
+	
+	@ExceptionHandler(TransactionException.class)
+	public String handleAllException(Exception ex) {
+ 
+		return "error-pages/transactionError";
+ 
 	}
 
 }
