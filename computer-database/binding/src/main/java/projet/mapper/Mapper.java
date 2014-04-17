@@ -67,8 +67,16 @@ public class Mapper {
 		
 		String id=Long.toString(computer.getId());
 		String name= computer.getName();
-		String introduced = computer.getDateIntroduced().toString(pattern);
-		String discontinued = computer.getDateDiscontinued().toString(pattern);
+		DateTime d=computer.getDateIntroduced();
+		String introduced="";
+		String discontinued="";
+		if (d!=null) {
+			introduced = d.toString(pattern);
+		}
+		d=computer.getDateDiscontinued();
+		if (d!=null) {
+			discontinued = d.toString(pattern);
+		}
 		String company_id = Long.toString(computer.getCompany().getId());
 		
 		return new ComputerDto(id,name,introduced,discontinued,company_id);

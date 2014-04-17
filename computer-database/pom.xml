@@ -1,81 +1,130 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>formation_excilys</groupId>
 	<artifactId>computer-database</artifactId>
 	<version>4.0.0</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 	<name>computer-database</name>
 	
 
 	<properties>
+		<joda-time-jsptags-version>1.1.1</joda-time-jsptags-version>
+		<joda-time-version>2.3</joda-time-version>
+		<spring-version>4.0.3.RELEASE</spring-version>
+		<bonecp-version>0.8.0.RELEASE</bonecp-version>
+		<jstl-version>1.2</jstl-version>
+		<mysql-version>5.1.29</mysql-version>
+		<slf4j-version>1.7.6</slf4j-version>
+		<hibernate-validator-version>5.1.0.Final</hibernate-validator-version>
+		
+		<core-version>1.0.0</core-version>
+		<persistence-version>1.0.0</persistence-version>
+		<service-version>1.0.0</service-version>
+		<binding-version>1.0.0</binding-version>
+		<webapp-version>1.0.0</webapp-version>
+		
+		
 	</properties>
 
 	
-
+	<dependencyManagement>
+		<dependencies>
+	
+			<dependency>
+			    <groupId>joda-time</groupId>
+			    <artifactId>joda-time-jsptags</artifactId>
+			    <version>${joda-time-jsptags-version}</version>
+			</dependency>	
+	
+			<dependency>
+			    <groupId>joda-time</groupId>
+			    <artifactId>joda-time</artifactId>
+			    <version>${joda-time-version}</version>
+			</dependency>
+			
+	            
+			<dependency>
+				<groupId>com.jolbox</groupId>
+				<artifactId>bonecp</artifactId>
+				<version>${bonecp-version}</version>
+			</dependency>
+	
+	
+			<dependency>
+				<groupId>jstl</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl-version}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql-version}</version>
+			</dependency>
+	        
+	            
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator-version}</version>
+			</dependency>
+			
+			
+			<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-jdbc</artifactId>
+			    <version>${spring-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring-version}</version>
+			</dependency>
+			            
+			<dependency>
+				<groupId>formation_excilys</groupId>
+				<artifactId>core</artifactId>
+				<version>${core-version}</version>
+			</dependency>
+	
+			<dependency>
+				<groupId>formation_excilys</groupId>
+				<artifactId>persistence</artifactId>
+				<version>${persistence-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>formation_excilys</groupId>
+				<artifactId>service</artifactId>
+				<version>${service-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>formation_excilys</groupId>
+				<artifactId>binding</artifactId>
+				<version>${binding-version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>formation_excilys</groupId>
+				<artifactId>webapp</artifactId>
+				<version>${webapp-version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<dependencies>
-
-
-		<dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time-jsptags</artifactId>
-		    <version>1.1.1</version>
-		</dependency>	
-
-		<dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time</artifactId>
-		    <version>2.3</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>4.0.2.RELEASE</version>
-		</dependency>
-            
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp</artifactId>
-			<version>0.8.0.RELEASE</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.29</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.6</version>
-		</dependency>
-            
-            
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-validator</artifactId>
-			<version>5.1.0.Final</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-jdbc</artifactId>
-		    <version>4.0.3.RELEASE</version>
-		</dependency>
-		            
-
+	
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j-version}</version>
+			</dependency>
+			
 	</dependencies>
 	
   <build>
@@ -93,8 +142,15 @@
         </configuration>
       </plugin>
     </plugins>
-    
+ 
+   
   </build>
 	
+  <modules>
+    <module>webapp</module>
+    <module>persistence</module>
+    <module>service</module>
+    <module>binding</module>
+    <module>core</module>
+  </modules>
 </project>
-
