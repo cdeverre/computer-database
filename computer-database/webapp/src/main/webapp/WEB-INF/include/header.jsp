@@ -11,18 +11,18 @@
 <title>EPF Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="<c:url value="css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
+<link href="<spring:url value="/css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-<link rel="stylesheet" href="<c:url value="css/jquery-ui-1.10.4.custom.min.css"/>">
-<link href="<c:url value="css/main.css"/>" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="<spring:url value="/css/jquery-ui-1.10.4.custom.min.css"/>">
+<link href="<spring:url value="/css/main.css"/>" rel="stylesheet" media="screen">
 
-<script src="<c:url value="js/jquery-1.10.2.js"/>"></script>
-<script src="<c:url value="js/jquery-ui-1.10.4.custom.min.js"/>"></script>
-<script src="<c:url value="js/jquery.validate.min.js"/>"></script>
-<script src="<c:url value="js/jquery.ui.datepicker-fr.js"/>"></script>
+<script src="<spring:url value="/js/jquery-1.10.2.js"/>"></script>
+<script src="<spring:url value="/js/jquery-ui-1.10.4.custom.min.js"/>"></script>
+<script src="<spring:url value="/js/jquery.validate.min.js"/>"></script>
+<script src="<spring:url value="/js/jquery.ui.datepicker-fr.js"/>"></script>
 
-<%-- <script src="<c:url value="js/form-validation.js"/>"></script> --%>
- <script src="<c:url value="js/bootstrap.min.js"/>"></script>
+ <script src="<spring:url value="/js/form-validation.js"/>"></script>
+ <script src="<spring:url value="/js/bootstrap.min.js"/>"></script>
 
 
 

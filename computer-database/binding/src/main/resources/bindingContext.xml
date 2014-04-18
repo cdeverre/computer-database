@@ -11,13 +11,12 @@ http://www.springframework.org/schema/tx
      http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 ">
 
-	<context:annotation-config />
-	
-	<import resource="classpath:bindingContext.xml"/>
-	
-	 <bean id="messageSource"
-		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-		<property name="basename" value="classpath:message" />
-	</bean>
+	<import resource="classpath:serviceContext.xml"/>
 
+	
+	<context:component-scan base-package="projet.mapper"/>
+	<context:component-scan base-package="projet.validator"/>
+	
+	
+	
 </beans>

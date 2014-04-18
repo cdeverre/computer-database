@@ -1,6 +1,6 @@
 package projet.controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +39,7 @@ public class Dashboard  {
     @RequestMapping(method=RequestMethod.GET)
 	protected String doGet(HttpServletRequest request, HttpServletResponse response)  {
 		int numberOfComputer =0;
-		ArrayList<Computer> computerList=new ArrayList<Computer>();
+		List<Computer> computerList=null;
 		String currentPageString=request.getParameter("currentPage");
 		String orderByColumns=request.getParameter("orderByColumns");
 		String orderByType=request.getParameter("orderByType");

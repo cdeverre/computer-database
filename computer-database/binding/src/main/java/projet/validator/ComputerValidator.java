@@ -50,7 +50,7 @@ public class ComputerValidator implements Validator{
 				error.rejectValue("dateDiscontinued", "error.computer.discontinued");
 		}
 		
-		if(computer.getCompany()!=null && !"0".equals(computer.getCompany()) && !(computer.getCompany().matches("\\d+"))) {
+		if(computer.getCompany()!=null && !"0".equals(computer.getCompany()) && !(computer.getCompany().matches("\\d+") )) {
 			error.rejectValue("company", "error.computer.company");
 		}
 	}

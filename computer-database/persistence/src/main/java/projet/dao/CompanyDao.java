@@ -1,21 +1,19 @@
 package projet.dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.jolbox.bonecp.BoneCPDataSource;
-
 import projet.exception.TransactionException;
+import projet.mapper.CompanyRowMapper;
 import projet.model.Company;
+
+import com.jolbox.bonecp.BoneCPDataSource;
 
 @Repository
 public class CompanyDao {
@@ -40,65 +38,39 @@ public class CompanyDao {
 	
 	
 	
-	public ArrayList<Company> getAll() {
-		ArrayList<Company> result = new ArrayList<Company>();
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		Statement stmt=null;
+	public List<Company> getAll() {
+		List<Company> result=null;
+		logger.debug("Creating a jdbc template");
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+
+		
+		String query = "SELECT * from company";
 		try {
-			logger.debug("Creating a statement");
-			stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query = "SELECT * from company";
-			
-			logger.debug("Sending query to list all the computers :\n"+query);
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			
-						
-			while(rs.next()) {
-				long id=rs.getLong(1);
-				String name=rs.getString(2);
-				Company c=new Company(id,name);
-				result.add(c);
-			}
-			
-		} catch (SQLException e) {
+			result = jdbcTemplate.query(query, new CompanyRowMapper());
+		} catch (DataAccessException e) {
 			logger.error("SQL error when getting the list of company");
-			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close(rs,stmt);
+			throw new TransactionException("SQL Error when trying to get the list of company",e);
 		}
+		
 		return result;
 	}
 	
+	
 	public String getName(long id) {
 		String res=null;
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		Statement stmt=null;
-		try{
-			logger.debug("Creating a statement");
-			stmt = connection.createStatement();
-			logger.debug("Statement created");
-			
-			String query = "SELECT cr.name from company cr where id='"+id+"'";
-			
-			logger.debug("Sending query to list all the computers :\n"+query);
-			rs=stmt.executeQuery(query);
-			logger.debug("Query sended succesfully");
-			if(rs.next()) {
-				res=rs.getString(1);
-			}
-		} catch (SQLException e) {
-			logger.error("SQL error when getting a company by his id");
-			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close(rs,stmt);
+		
+		logger.debug("Creating a jdbc template");
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+		
+		Object[] args=new Object[] {id};
+		String query = "SELECT cr.name from company cr where id= ?";
+		try {
+			res=jdbcTemplate.queryForObject(query, String.class , args);	
+		}catch (DataAccessException e) {
+			logger.error("SQL error when getting the list of company");
 		}
 		return res;
-		
+	
 	}
 
 	

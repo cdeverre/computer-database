@@ -1,6 +1,6 @@
 package projet.service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class CompanyServices {
 
 
 	@Transactional(readOnly=true)
-	public ArrayList<Company> getAll() {
+	public List<Company> getAll() {
 		return(companyDao.getAll());
 	}
 	

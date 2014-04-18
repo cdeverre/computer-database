@@ -1,19 +1,15 @@
 package projet.dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.jolbox.bonecp.BoneCPDataSource;
-
 import projet.exception.TransactionException;
+
+import com.jolbox.bonecp.BoneCPDataSource;
 
 @Repository
 public class LogDao {
@@ -31,29 +27,23 @@ public class LogDao {
 	 
 	 public void insertLog(long id,String message) throws TransactionException{
 		 
-		Connection connection=DataSourceUtils.getConnection(boneCP);	 
-		ResultSet rs =null ; 
-		Statement stmt=null;
-	
-		
+		 JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);	
 		
 		try {
-			logger.debug("Creating a statement");
-			stmt = connection.createStatement();
-			logger.debug("Statement created");
 			
 			StringBuilder query =new StringBuilder();
-			query.append("INSERT INTO log SET id=null, date=null, text='"+message+" a new computer with the id:");
+			query.append("INSERT INTO log SET id=null, date=null, text='");
+			query.append(message);
+			query.append(" a new computer with the id:");
 			query.append(id);
 			query.append("'");
 			
-			stmt.executeUpdate(query.toString());
+			logger.debug("Creating a log in the database");
+			jdbcTemplate.update(query.toString());
 			
-		} catch (SQLException e) {
+		} catch (DataAccessException e) {
 			throw new TransactionException("SQL Error when trying to log a create",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-		}
+		} 
 	 }
 
 

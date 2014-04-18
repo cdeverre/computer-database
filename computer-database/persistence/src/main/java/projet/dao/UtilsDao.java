@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class ConnectionFactory{
+public class UtilsDao{
 
 	/* *******************************************************/
 	/* ***               Attributs                       *** */
@@ -17,7 +17,7 @@ public class ConnectionFactory{
 	
 	
 	
-    private static Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(UtilsDao.class);
 
 	
 	public static void close( ResultSet rs, java.sql.Statement stmt) {

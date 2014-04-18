@@ -1,6 +1,6 @@
 package projet.service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class ComputerServices {
 	}
 
 	@Transactional(readOnly=true)
-	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
+	public List<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
 		return (computerDao.getAllPagination(currentPage,orderByColumns, orderByType));
 	}
 
@@ -93,7 +93,7 @@ public class ComputerServices {
 	}
 
 	@Transactional(readOnly=true)
-	public ArrayList<Computer> search(String pattern, int currentPage,String orderByColumns,boolean orderByType) {
+	public List<Computer> search(String pattern, int currentPage,String orderByColumns,boolean orderByType) {
 		return computerDao.search(pattern,currentPage,orderByColumns,orderByType);
 
 	}

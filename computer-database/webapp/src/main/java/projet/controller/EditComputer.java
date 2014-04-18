@@ -1,6 +1,6 @@
 package projet.controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -54,7 +54,7 @@ public class EditComputer  {
 		Computer computer=computerServices.find(id);
 		ComputerDto computerDto= mapper.computerToComputerDto(computer);
 		
-		ArrayList<Company> companyList = companyServices.getAll();
+		List<Company> companyList = companyServices.getAll();
 		map.addAttribute("companyList", companyList);
 		map.addAttribute("computerDto", computerDto);
 		
@@ -85,7 +85,7 @@ public class EditComputer  {
 
 			mav.addObject("computerDto",computerDto);
 			
-			ArrayList<Company> companyList = companyServices.getAll();
+			List<Company> companyList = companyServices.getAll();
 			mav.addObject("companyList", companyList);
 			
 

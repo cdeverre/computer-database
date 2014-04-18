@@ -1,6 +1,6 @@
 package projet.controller;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -59,7 +59,7 @@ public class AddComputer  {
     
     @RequestMapping(method=RequestMethod.GET)
 	protected String doGet(ModelMap map)  {
-    	ArrayList<Company> companyList = companyServices.getAll();
+    	List<Company> companyList = companyServices.getAll();
 		map.addAttribute("companyList", companyList);
 		map.addAttribute("computerDto", new ComputerDto());
 		
@@ -84,7 +84,7 @@ public class AddComputer  {
 			mav=new ModelAndView("addComputer");
 			mav.addObject("computerDto",computerDto);
 			
-			ArrayList<Company> companyList = companyServices.getAll();
+			List<Company> companyList = companyServices.getAll();
 			mav.addObject("companyList", companyList);
 
 			

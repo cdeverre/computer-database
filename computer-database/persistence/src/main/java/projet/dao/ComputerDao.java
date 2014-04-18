@@ -2,25 +2,26 @@ package projet.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import com.jolbox.bonecp.BoneCPDataSource;
-
 import projet.exception.TransactionException;
-import projet.model.Company;
+import projet.mapper.ComputerRowMapper;
 import projet.model.Computer;
+
+import com.jolbox.bonecp.BoneCPDataSource;
 
 
 @Repository
@@ -48,100 +49,86 @@ public class ComputerDao {
 	/* ***               Methods                         *** */
 	/* *******************************************************/
 	
-	public void create(Computer computer) throws TransactionException  {
+	public void create(final Computer computer) throws TransactionException  {
 		
-			
-		Connection connection=DataSourceUtils.getConnection(boneCP);
-		
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+
+		KeyHolder holder = new GeneratedKeyHolder();
 		try {
-			String query="INSERT into computer SET id=null,name= ? , introduced=FROM_UNIXTIME( ? ), discontinued=FROM_UNIXTIME( ? ), company_id= ?";
-			
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
-			logger.debug("Statement created");
+			jdbcTemplate.update(new PreparedStatementCreator() {           
 		
-			stmt.setString(1, computer.getName());
-			if (computer.getDateIntroduced()!=null) {
-				stmt.setLong(2,computer.getDateIntroduced().getMillis()/1000);
-			} else {
-				stmt.setNull(2, Types.NULL);
-			}
+		                @Override
+		                public PreparedStatement createPreparedStatement(Connection connection)
+		                        throws SQLException {
+		            		String query="INSERT into computer SET id=null,name= ? , introduced=FROM_UNIXTIME( ? ),"
+		            				+ " discontinued=FROM_UNIXTIME( ? ), company_id= ?";
+		                    PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+		                    stmt.setString(1, computer.getName());
+		        			if (computer.getDateIntroduced()!=null) {
+		        				stmt.setLong(2,computer.getDateIntroduced().getMillis()/1000);
+		        			} else {
+		        				stmt.setNull(2, Types.NULL);
+		        			}
+		        			
+		        			if (computer.getDateDiscontinued()!=null) {
+		        				stmt.setLong(3,computer.getDateDiscontinued().getMillis()/1000);
+		        			} else {
+		        				stmt.setNull(3, Types.NULL);
+		        			}
+		        			
+		        			if (computer.getCompany()!=null) {
+		        				stmt.setLong(4, computer.getCompany().getId());
+		        			} else {
+		        				stmt.setNull(4, Types.NULL);
+		        			}
+		                    return stmt;
+		                }
+		            }, holder);
+		
 			
-			if (computer.getDateDiscontinued()!=null) {
-				stmt.setLong(3,computer.getDateDiscontinued().getMillis()/1000);
-			} else {
-				stmt.setNull(3, Types.NULL);
-			}
-			
-			if (computer.getCompany()!=null) {
-				stmt.setLong(4, computer.getCompany().getId());
-			} else {
-				stmt.setNull(4, Types.NULL);
-			}
-			
-				
-			logger.debug("Sending query to create a computer :\n " + query );
-			stmt.execute();
-			logger.debug("Query sended succesfully");
-			
-			rs=stmt.getGeneratedKeys();
-	
-			if(rs.next()) {
-	
-				computer.setId(rs.getLong(1));
-	
-			}
-		} catch (SQLException e) {
+			computer.setId(holder.getKey().longValue());
+
+		} catch (DataAccessException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-		}
+		} 
 	}
 	
 	public void update(Computer computer) throws TransactionException {
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
-
-		try {
-			String query="UPDATE computer SET name= ? , introduced=FROM_UNIXTIME( ? )"
-					+ " ,discontinued=FROM_UNIXTIME( ? ), company_id= ?  WHERE id= ?  ";
-			
-			
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query);
-			logger.debug("Statement created");
-			
-			stmt.setString(1, computer.getName());
-			if (computer.getDateIntroduced()!=null) {
-				stmt.setLong(2,computer.getDateIntroduced().getMillis()/1000);
-			} else {
-				stmt.setNull(2, Types.NULL);
-			}
-			
-			if (computer.getDateDiscontinued()!=null) {
-				stmt.setLong(3,computer.getDateDiscontinued().getMillis()/1000);
-			} else {
-				stmt.setNull(3, Types.NULL);
-			}
-			
-			if (computer.getCompany()!=null) {
-				stmt.setLong(4, computer.getCompany().getId());
-			} else {
-				stmt.setNull(4, Types.NULL);
-			}
-			stmt.setLong(5, computer.getId());
-			
-			stmt.executeUpdate();
-			logger.debug("Query sended succesfully");
 		
-		} catch (SQLException e) {
-			throw new TransactionException("SQL Error when trying to update a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+
+		String query="UPDATE computer SET name= ? , introduced=FROM_UNIXTIME( ? )"
+					+ " ,discontinued=FROM_UNIXTIME( ? ), company_id= ?  WHERE id= ?  ";
+		
+		Object[] args=new Object[5];
+
+		args[0]= computer.getName();
+		if (computer.getDateIntroduced()!=null) {
+			args[1]=computer.getDateIntroduced().getMillis()/1000;
+		} else {
+			args[1]=null;
 		}
+		
+		if (computer.getDateDiscontinued()!=null) {
+			args[2]=computer.getDateDiscontinued().getMillis()/1000;
+		} else {
+			args[2]= null;
+		}
+		
+		if (computer.getCompany()!=null) {
+			args[3]= computer.getCompany().getId();
+		} else {
+			args[3]= null;
+		}
+		args[4]= computer.getId();
+		
+		try {
+			jdbcTemplate.update(query, args);
+			logger.debug("Query update sended succesfully");
+		
+		} catch (DataAccessException e) {
+			throw new TransactionException("SQL Error when trying to update a computer",e);
+		} 
 		
 	}
 	
@@ -149,268 +136,143 @@ public class ComputerDao {
 	
 	
 	public void delete(long id) throws TransactionException {
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
-
-		try {
-			String query ="DELETE FROM computer WHERE id=?";
-			
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query);
-			logger.debug("Statement created");
-	
-			stmt.setLong(1, id);
-			
-			stmt.executeUpdate();
-			logger.debug("Query sended succesfully");
 		
-		} catch (SQLException e) {
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+		String query ="DELETE FROM computer WHERE id=?";
+		try {
+			Object[] args=new Object[1];
+			args[0]=id;
+			jdbcTemplate.update(query, args);
+	
+			logger.debug("Query delete sended succesfully");
+		
+		} catch (DataAccessException e) {
 			throw new TransactionException("SQL Error when trying to delete a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-		}
+		} 
 		
 	}
 	
 	
 	
-	public ArrayList<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
-		ArrayList<Computer> result = new ArrayList<Computer>();
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
-		try {
-			
-			
-			stmt = connection.prepareStatement("SELECT * from company");
-			rs=stmt.executeQuery();
-			
-			HashMap<Long, String> companyTable = new HashMap<Long,String>();
-			while(rs.next()){
-				companyTable.put(rs.getLong(1), rs.getString(2));
-			}
-			
-			
-			StringBuilder query = new StringBuilder();
-			query.append("SELECT * from computer ORDER BY ");
-			query.append(orderByColumns);
-			if(orderByType) {
-				query.append(" ASC");
-			} else {
-				query.append(" DESC");
-			}
-			query.append(" LIMIT ? OFFSET ? ");
-			
-			ConnectionFactory.close( rs, stmt);
-			
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query.toString());
-			logger.debug("Statement created");
-			
-			stmt.setLong(1,ComputerDao.LIMIT);
-			stmt.setLong(2,(currentPage-1)*ComputerDao.LIMIT);
-					
-			logger.debug("Sending query to list all the computers  "  );
-			rs=stmt.executeQuery();
-			logger.debug("Query sended succesfully");
-			
-			while(rs.next()) {
-				long id=rs.getLong(1);
-				String name=rs.getString(2);
-				DateTime introduced=null;
-				if(rs.getDate(3)!=null) {
-					introduced=new DateTime(rs.getDate(3));
-				}
-				DateTime discontinued=null;
-				if(rs.getDate(4)!=null) {
-					discontinued=new DateTime(rs.getDate(4));
-				}
-				long companyId = rs.getLong(5);
-				
-				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,companyTable.get(companyId)));
-				result.add(c);
-			}
-			
-		} catch (SQLException e) {
-			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-			
+	public List<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
+		List<Computer> result = null;
+		
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT cr.id, cr.name, cr.introduced, cr.discontinued, cr.company_id, cy.name ");
+		query.append("from computer cr LEFT JOIN company cy ON cr.company_id=cy.id ORDER BY cr.");
+		query.append(orderByColumns);
+		if(orderByType) {
+			query.append(" ASC");
+		} else {
+			query.append(" DESC");
 		}
+		query.append(" LIMIT ? OFFSET ?  ");
+		
+		Object[] args=new Object[2];
+		args[0]=ComputerDao.LIMIT;
+		args[1]=(currentPage-1)*ComputerDao.LIMIT;
+		
+		logger.debug("Sending query to list all the computers  "  );
+
+		try {
+			result = jdbcTemplate.query(query.toString(), args,new ComputerRowMapper());
+			logger.debug("Query sended succesfully");
+		} catch (DataAccessException e) {
+			throw new TransactionException("SQL Error when trying to get the list of computer",e);
+		}
+
+
 		return result;
 	}
 	
 	public int count() {
 		int res = 0;
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+
 		try {
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement("SELECT COUNT(*) from computer ");
-			logger.debug("Statement created");
-			
-			
+			String query="SELECT COUNT(*) from computer ";
+	
 			logger.debug("Sending query to count all the computer ");
-			rs=stmt.executeQuery();
+
+			res=jdbcTemplate.queryForObject(query, Integer.class);
 			logger.debug("Query sended succesfully");
-			
-			if (rs.next()) {
-				res=rs.getInt(1);
-			}
-		} catch (SQLException e) {
+
+		} catch (DataAccessException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-			
 		}
 		return res;
 	}
 	
+	
 	public int count(String pattern) {
 		int res = 0;
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
-		try {
-			
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+		String query ="SELECT COUNT(*) from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like ? or cy.name like ?";
 		
-			
-			String query ="SELECT COUNT(*) from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like ? or cy.name like ?";
-			
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query);
-			logger.debug("Statement created");
-			
-			stmt.setString(1, "%"+pattern+"%");
-			stmt.setString(2, "%"+pattern+"%");
-			
-			
+		Object[] args=new Object[2];
+		
+		args[0]= "%"+pattern+"%";
+		args[1]= "%"+pattern+"%";
+		try {
+
 			logger.debug("Sending query to count all the computer ");
-			rs=stmt.executeQuery();
+			res=jdbcTemplate.queryForObject(query,args, Integer.class);
 			logger.debug("Query sended succesfully");
-			
-			
-			if (rs.next()) {
-				res=rs.getInt(1);
-			}
-		} catch (SQLException e) {
+
+		} catch (DataAccessException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-			
-		}
+		} 
 		return res;
 	}
 	
 	public Computer find(long id) {
 		Computer res=null;
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
+		StringBuilder query=new StringBuilder();
+		query.append("SELECT cr.id, cr.name, cr.introduced, cr.discontinued, cr.company_id, cy.name ");
+		query.append("from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.id= ?");
+		Object[] args=new Object[1];
+		args[0]=id;
 		try {
-			
-			
-			
-			String query;
-			query="SELECT * from computer where id= ?";
 
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query);
-			logger.debug("Statement created");
-			
-			stmt.setLong(1, id);
-			
 			logger.debug("Sending query to list all the company " );
-			rs=stmt.executeQuery();
+			res=jdbcTemplate.query(query.toString(),args, new ComputerRowMapper()).get(0);
 			logger.debug("Query sended succesfully");
-			
-			if(rs.next()) {
-				String name=rs.getString(2);
-				DateTime introduced=null;
-				if(rs.getDate(3)!=null) {
-					introduced=new DateTime(rs.getDate(3));
-				}
-				DateTime discontinued=null;
-				if(rs.getDate(4)!=null) {
-					discontinued=new DateTime(rs.getDate(4));
-				}
-				long companyId = rs.getLong(5);
-				String companyName=null;
-				ConnectionFactory.close( rs, stmt);
-				
-				stmt=connection.prepareStatement(query);
-				rs=stmt.executeQuery("SELECT company.name from company company where company.id="+companyId);
-				if (rs.next()) {
-					companyName=rs.getString(1);
-				}
-				res=new Computer(id,name,introduced,discontinued,new Company(companyId,companyName));
-			}
-		} catch (SQLException e) {
+
+		} catch (DataAccessException e) {
 			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-			
-		}
+		} 
 		return res;
 	}
 	
 	
 	
-	public ArrayList<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType) {
-		ArrayList<Computer> result = new ArrayList<Computer>();
-		Connection connection = DataSourceUtils.getConnection(boneCP);
-		ResultSet rs=null;
-		PreparedStatement stmt=null;
-		try {
-			
-			
-			StringBuilder query = new StringBuilder();
-			query.append("SELECT * from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like ? or cy.name like ? ORDER BY cr.");
-			query.append(orderByColumns);
-			if(orderByType) {
-				query.append(" ASC");
-			} else {
-				query.append(" DESC");
-			}
-			query.append(" LIMIT ? OFFSET ?");
-			
-			logger.debug("Creating a statement");
-			stmt = connection.prepareStatement(query.toString());
-			logger.debug("Statement created");
+	public List<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType) {
+		List<Computer> result = null;
+		JdbcTemplate jdbcTemplate= new JdbcTemplate(boneCP);
 
-			stmt.setString(1, "%"+pattern+"%");
-			stmt.setString(2, "%"+pattern+"%");
-			stmt.setLong(3,ComputerDao.LIMIT);
-			stmt.setLong(4,(currentPage-1)*ComputerDao.LIMIT);
-						
-			logger.debug("Sending query to search for computer ");
-			rs=stmt.executeQuery();
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT * from computer cr LEFT JOIN company cy on cr.company_id=cy.id where cr.name like ? or cy.name like ? ORDER BY cr.");
+		query.append(orderByColumns);
+		if(orderByType) {
+			query.append(" ASC");
+		} else {
+			query.append(" DESC");
+		}
+		query.append(" LIMIT ? OFFSET ?");
+		Object[] args=new Object[4];
+		args[0]="%"+pattern+"%";
+		args[1]="%"+pattern+"%";
+		args[2]=ComputerDao.LIMIT;
+		args[3]=(currentPage-1)*ComputerDao.LIMIT;
+		
+		try {
+			result = jdbcTemplate.query(query.toString(), args,new ComputerRowMapper());
 			logger.debug("Query sended succesfully");
-			
-			while(rs.next()) {
-				long id=rs.getLong(1);
-				String name=rs.getString(2);
-				DateTime introduced=null;
-				if(rs.getDate(3)!=null) {
-					introduced=new DateTime(rs.getDate(3));
-				}
-				DateTime discontinued=null;
-				if(rs.getDate(4)!=null) {
-					discontinued=new DateTime(rs.getDate(4));
-				}
-				long companyId = rs.getLong(5);
-				
-				Computer c=new Computer(id,name,introduced,discontinued,new Company(companyId,rs.getString(7)));
-				result.add(c);
-			}
-			
-		} catch (SQLException e) {
-			throw new TransactionException("SQL Error when trying to create a computer",e);
-		} finally {
-			ConnectionFactory.close( rs, stmt);
-			
+		} catch (DataAccessException e) {
+			throw new TransactionException("SQL Error when trying to get the list of computer",e);
 		}
 		return result;
 		
