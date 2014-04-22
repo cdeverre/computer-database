@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -18,7 +18,7 @@ public class ComputerValidator implements Validator{
 
 
 	@Autowired
-	private ReloadableResourceBundleMessageSource message;
+	private ResourceBundleMessageSource message;
 	
 	@Override
 	public boolean supports(Class<?> arg0) {

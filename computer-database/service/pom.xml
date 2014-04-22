@@ -13,6 +13,7 @@
 		<dependency>
 			<groupId>formation_excilys</groupId>
 			<artifactId>persistence</artifactId>
+			<scope>compile</scope>
 		</dependency>
 	
 	</dependencies>

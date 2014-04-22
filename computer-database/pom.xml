@@ -11,20 +11,23 @@
 	
 
 	<properties>
-		<joda-time-jsptags-version>1.1.1</joda-time-jsptags-version>
-		<joda-time-version>2.3</joda-time-version>
-		<spring-version>4.0.3.RELEASE</spring-version>
-		<bonecp-version>0.8.0.RELEASE</bonecp-version>
-		<jstl-version>1.2</jstl-version>
-		<mysql-version>5.1.29</mysql-version>
-		<slf4j-version>1.7.6</slf4j-version>
-		<hibernate-validator-version>5.1.0.Final</hibernate-validator-version>
+		<joda.time.jsptags.version>1.1.1</joda.time.jsptags.version>
+		<joda.time.version>2.3</joda.time.version>
+		<spring.version>4.0.3.RELEASE</spring.version>
+		<bonecp.version>0.8.0.RELEASE</bonecp.version>
+		<jstl.version>1.2</jstl.version>
+		<mysql.version>5.1.29</mysql.version>
+		<slf4j.version>1.7.6</slf4j.version>
+		<hibernate.validator.version>5.1.0.Final</hibernate.validator.version>
+		<hibernate.version>4.3.5.Final</hibernate.version>
+		<jcl.over.slf4j.version>1.7.7</jcl.over.slf4j.version>
 		
-		<core-version>1.0.0</core-version>
-		<persistence-version>1.0.0</persistence-version>
-		<service-version>1.0.0</service-version>
-		<binding-version>1.0.0</binding-version>
-		<webapp-version>1.0.0</webapp-version>
+		<core.version>1.0.0</core.version>
+		<persistence.version>1.0.0</persistence.version>
+		<service.version>1.0.0</service.version>
+		<binding.version>1.0.0</binding.version>
+		<webapp.version>1.0.0</webapp.version>
+		
 		
 		
 	</properties>
@@ -33,86 +36,101 @@
 	<dependencyManagement>
 		<dependencies>
 	
+			
+			<dependency>
+			    <groupId>org.hibernate</groupId>
+			    <artifactId>hibernate-entitymanager</artifactId>
+			    <version>${hibernate.version}</version>
+			</dependency>
+						
 			<dependency>
 			    <groupId>joda-time</groupId>
 			    <artifactId>joda-time-jsptags</artifactId>
-			    <version>${joda-time-jsptags-version}</version>
+			    <version>${joda.time.jsptags.version}</version>
 			</dependency>	
 	
 			<dependency>
 			    <groupId>joda-time</groupId>
 			    <artifactId>joda-time</artifactId>
-			    <version>${joda-time-version}</version>
+			    <version>${joda.time.version}</version>
 			</dependency>
 			
 	            
 			<dependency>
 				<groupId>com.jolbox</groupId>
 				<artifactId>bonecp</artifactId>
-				<version>${bonecp-version}</version>
+				<version>${bonecp.version}</version>
 			</dependency>
 	
 	
 			<dependency>
 				<groupId>jstl</groupId>
 				<artifactId>jstl</artifactId>
-				<version>${jstl-version}</version>
+				<version>${jstl.version}</version>
 			</dependency>
 	
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>${mysql-version}</version>
+				<version>${mysql.version}</version>
 			</dependency>
 	        
 	            
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate-validator-version}</version>
+				<version>${hibernate.validator.version}</version>
 			</dependency>
 			
-			
-			<dependency>
-			    <groupId>org.springframework</groupId>
-			    <artifactId>spring-jdbc</artifactId>
-			    <version>${spring-version}</version>
-			</dependency>
 			
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
-				<version>${spring-version}</version>
+				<version>${spring.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
-			            
+			
+			<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-jdbc</artifactId>
+			    <version>${spring.version}</version>
+			</dependency>
+			         
+			
+           
 			<dependency>
 				<groupId>formation_excilys</groupId>
 				<artifactId>core</artifactId>
-				<version>${core-version}</version>
+				<version>${core.version}</version>
 			</dependency>
 	
 			<dependency>
 				<groupId>formation_excilys</groupId>
 				<artifactId>persistence</artifactId>
-				<version>${persistence-version}</version>
+				<version>${persistence.version}</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>formation_excilys</groupId>
 				<artifactId>service</artifactId>
-				<version>${service-version}</version>
+				<version>${service.version}</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>formation_excilys</groupId>
 				<artifactId>binding</artifactId>
-				<version>${binding-version}</version>
+				<version>${binding.version}</version>
 			</dependency>
 			
 			<dependency>
 				<groupId>formation_excilys</groupId>
 				<artifactId>webapp</artifactId>
-				<version>${webapp-version}</version>
+				<version>${webapp.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -122,7 +140,15 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>${slf4j-version}</version>
+				<version>${slf4j.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${jcl.over.slf4j.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 			
 	</dependencies>

@@ -2,7 +2,6 @@ package projet.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -48,9 +48,10 @@ public class EditComputer  {
 
     
     @RequestMapping(method=RequestMethod.GET)
-	protected String doGet(HttpServletRequest request, ModelMap map) {
-		String stringid=request.getParameter("id");
-		long id = mapper.parseIdToInt(stringid);
+	protected String doGet(
+			@RequestParam(value="id",required=true) String stringId,
+			ModelMap map) {
+		long id = mapper.parseIdToInt(stringId);
 		Computer computer=computerServices.find(id);
 		ComputerDto computerDto= mapper.computerToComputerDto(computer);
 		

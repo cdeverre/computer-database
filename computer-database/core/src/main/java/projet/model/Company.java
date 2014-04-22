@@ -1,5 +1,6 @@
 package projet.model;
 
+
 public class Company {
 
 	private long id;

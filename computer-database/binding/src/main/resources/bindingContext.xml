@@ -13,6 +13,10 @@ http://www.springframework.org/schema/tx
 
 	<import resource="classpath:serviceContext.xml"/>
 
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="message" />
+	</bean>
 	
 	<context:component-scan base-package="projet.mapper"/>
 	<context:component-scan base-package="projet.validator"/>

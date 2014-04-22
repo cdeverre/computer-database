@@ -10,9 +10,17 @@
   <version>1.0.0</version>
   
   <dependencies>
-  	<dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time</artifactId>
-	</dependency>
+	  	<dependency>
+			    <groupId>joda-time</groupId>
+			    <artifactId>joda-time</artifactId>
+			    <scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-entitymanager</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+	
   </dependencies>
 </project>

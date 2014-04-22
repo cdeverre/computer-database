@@ -2,17 +2,13 @@ package projet.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import projet.exception.TransactionException;
 import projet.model.Computer;
 import projet.service.ComputerServices;
 import projet.wrapper.PageWrapper;
@@ -37,14 +33,19 @@ public class Dashboard  {
     }
 
     @RequestMapping(method=RequestMethod.GET)
-	protected String doGet(HttpServletRequest request, HttpServletResponse response)  {
+	protected String doGet(ModelMap map,
+			@RequestParam(value="currentPage",required=false) String currentPage ,
+			@RequestParam(value="orderByColums",required=false) String orderByColumns ,
+			@RequestParam(value="orderByType",required=false) String orderByType ,
+			@RequestParam(value="pattern",required=false) String pattern,
+			@RequestParam(value="add",required=false) String add ,
+			@RequestParam(value="delete",required=false) String delete ,
+			@RequestParam(value="update",required=false) String update )  {
+    	
 		int numberOfComputer =0;
 		List<Computer> computerList=null;
-		String currentPageString=request.getParameter("currentPage");
-		String orderByColumns=request.getParameter("orderByColumns");
-		String orderByType=request.getParameter("orderByType");
-		String pattern=request.getParameter("pattern");
-		PageWrapper page=new PageWrapper(currentPageString, orderByColumns, orderByType, pattern);
+
+		PageWrapper page=new PageWrapper(currentPage, orderByColumns, orderByType, pattern);
 		
 		int numberOfPage=1;
 		if(	page.getPattern()!=null && !"".equals(page.getPattern())) {
@@ -62,32 +63,20 @@ public class Dashboard  {
 		}
 		
 		
-		request.setAttribute("page",page);
+		map.addAttribute("page",page);
 		
-		request.setAttribute("numberOfPage", numberOfPage );
-		request.setAttribute("numberOfComputer", numberOfComputer);
-		request.setAttribute("computerList", computerList);
+		map.addAttribute("numberOfPage", numberOfPage );
+		map.addAttribute("numberOfComputer", numberOfComputer);
+		map.addAttribute("computerList", computerList);
 		
-		request.setAttribute("add",request.getParameter("add"));
-		request.setAttribute("delete",request.getParameter("delete"));
-		request.setAttribute("update",request.getParameter("update"));
+		map.addAttribute("add",add);
+		map.addAttribute("delete",delete);
+		map.addAttribute("update",update);
 		
 		return("dashboard");
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-		this.doGet(request, response);
-	}
 	
 	
-	@ExceptionHandler(TransactionException.class)
-	public String handleAllException(Exception ex) {
- 
-		return "error-pages/transactionError";
- 
-	}
 
 }
