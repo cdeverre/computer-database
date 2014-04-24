@@ -67,13 +67,13 @@ public class Mapper {
 		
 		String id=Long.toString(computer.getId());
 		String name= computer.getName();
-		DateTime d=computer.getDateIntroduced();
+		DateTime d=computer.getIntroduced();
 		String introduced="";
 		String discontinued="";
 		if (d!=null) {
 			introduced = d.toString(pattern);
 		}
-		d=computer.getDateDiscontinued();
+		d=computer.getDiscontinued();
 		if (d!=null) {
 			discontinued = d.toString(pattern);
 		}

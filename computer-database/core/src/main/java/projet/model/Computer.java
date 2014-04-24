@@ -1,14 +1,42 @@
 package projet.model;
 
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+
+@Entity
+@Table( name = "computer" )
 public class Computer {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="id")
 	private long id;
+	
+	@Column(name="name")
 	private String name;
-	private DateTime DateIntroduced;
-	private DateTime DateDiscontinued;
+	
+	@Column(name = "introduced")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime introduced;
+	
+	@Column(name = "discontinued")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime discontinued;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="company_id")
 	private Company company;
 	
 	
@@ -18,16 +46,15 @@ public class Computer {
 	public Computer(long id,String name, DateTime DateIntroduced,DateTime DateDiscontinued, Company compagny) {
 		this.id=id;
 		this.name=name;
-		this.DateIntroduced=DateIntroduced;
-		this.DateDiscontinued=DateDiscontinued;
+		this.introduced=DateIntroduced;
+		this.discontinued=DateDiscontinued;
 		this.company=compagny; 
 	}
 	
 	public Computer(String name, DateTime DateIntroduced,DateTime DateDiscontinued, Company compagny) {
-		this.id=-1;
 		this.name=name;
-		this.DateIntroduced=DateIntroduced;
-		this.DateDiscontinued=DateDiscontinued;
+		this.introduced=DateIntroduced;
+		this.discontinued=DateDiscontinued;
 		this.company=compagny; 
 	}
 	
@@ -62,29 +89,29 @@ public class Computer {
 	/**
 	 * @return the DateIntroduced
 	 */
-	public DateTime getDateIntroduced() {
-		return DateIntroduced;
+	public DateTime getIntroduced() {
+		return introduced;
 	}
 	
 	/**
 	 * @param Dateintroduced the DateIntroduced to set
 	 */
-	public void setDateIntroduced(DateTime Dateintroduced) {
-		this.DateIntroduced = Dateintroduced;
+	public void setIntroduced(DateTime Dateintroduced) {
+		this.introduced = Dateintroduced;
 	}
 	
 	/**
 	 * @return the DateDiscontinued
 	 */
-	public DateTime getDateDiscontinued() {
-		return DateDiscontinued;
+	public DateTime getDiscontinued() {
+		return discontinued;
 	}
 	
 	/**
 	 * @param Datediscontinued the DateDiscontinued to set
 	 */
-	public void setDateDiscontinued(DateTime Datediscontinued) {
-		this.DateDiscontinued = Datediscontinued;
+	public void setDiscontinued(DateTime Datediscontinued) {
+		this.discontinued = Datediscontinued;
 	}
 	
 	/**
@@ -103,7 +130,13 @@ public class Computer {
 	
 	@Override
 	public String toString() {
-		return " [ Id="+id+" name="+name+" Introduced="+DateIntroduced+" Discontinued="+DateDiscontinued+" CompanyId="+company.getId()+" ] ";
+		StringBuilder res =new StringBuilder();
+		res.append(" [ Id="+id+" name="+name+" ; Introduced="+introduced+" ;  Discontinued="+discontinued+" ;");
+		if (company!=null) {
+			res.append("CompanyId="+company.getId()+" CompanyName="+company.getName() );
+		}
+		res.append("]");
+		return res.toString();
 	}
 	
 	@Override

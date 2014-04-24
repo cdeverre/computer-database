@@ -35,7 +35,7 @@ public class Dashboard  {
     @RequestMapping(method=RequestMethod.GET)
 	protected String doGet(ModelMap map,
 			@RequestParam(value="currentPage",required=false) String currentPage ,
-			@RequestParam(value="orderByColums",required=false) String orderByColumns ,
+			@RequestParam(value="orderByColumns",required=false) String orderByColumns ,
 			@RequestParam(value="orderByType",required=false) String orderByType ,
 			@RequestParam(value="pattern",required=false) String pattern,
 			@RequestParam(value="add",required=false) String add ,
