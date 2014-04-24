@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +38,8 @@ public class CompanyDaoImpl implements CompanyDao {
 	public List<Company> getAll() {
 		logger.debug("Enter getAll");
 		List<Company> result=null;
-		
-		String query = "SELECT cy from Company as cy";
-		
-		result = (ArrayList<Company>) sessionFactory.getCurrentSession().createQuery(query).list();
+				
+		result = (ArrayList<Company>) sessionFactory.getCurrentSession().createCriteria(Company.class).list();
 		
 		logger.debug("Leaving getAll");
 		return result;
@@ -50,8 +49,7 @@ public class CompanyDaoImpl implements CompanyDao {
 	public String getName(long id) {
 		String res=null;
 			
-		String query = "SELECT cy.name from Company as cy where cy.id= :id";
-		res=(String) sessionFactory.getCurrentSession().createQuery(query).setLong("id",id).list().get(0);
+		res=((Company) sessionFactory.getCurrentSession().createCriteria(Company.class).add(Restrictions.eq("id", id)).uniqueResult()).getName();
 		
 		return res;
 	
