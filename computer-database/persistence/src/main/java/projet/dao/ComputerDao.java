@@ -4,6 +4,7 @@ import java.util.List;
 
 import projet.exception.TransactionException;
 import projet.model.Computer;
+import projet.wrapper.PageWrapper;
 
 
 public interface ComputerDao {
@@ -21,13 +22,7 @@ public interface ComputerDao {
 	
 	
 	public void delete(long id) throws TransactionException ;
-	
-	
-	public List<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) ;
-	
-	
-	public int count() ;
-	
+		
 	
 	public int count(String pattern);
 	
@@ -35,7 +30,7 @@ public interface ComputerDao {
 	public Computer find(long id);
 	
 	
-	public List<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType);
+	public List<Computer> search(PageWrapper page);
 	
 	
 	

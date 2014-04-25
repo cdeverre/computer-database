@@ -13,6 +13,7 @@ import projet.dao.LogDao;
 import projet.exception.ComputerNonexistentException;
 import projet.model.Computer;
 import projet.service.ComputerServices;
+import projet.wrapper.PageWrapper;
 
 @Service
 @Transactional
@@ -78,15 +79,6 @@ public class ComputerServicesImpl implements ComputerServices {
 		return (computerDao.find(id));
 	}
 	
-	@Transactional(readOnly=true)
-	public int count() {
-		return (computerDao.count());
-	}
-
-	@Transactional(readOnly=true)
-	public List<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
-		return (computerDao.getAllPagination(currentPage,orderByColumns, orderByType));
-	}
 
 	@Transactional(readOnly=true)
 	public int getNumberOfPage(int count) {
@@ -94,8 +86,8 @@ public class ComputerServicesImpl implements ComputerServices {
 	}
 
 	@Transactional(readOnly=true)
-	public List<Computer> search(String pattern, int currentPage,String orderByColumns,boolean orderByType) {
-		return computerDao.search(pattern,currentPage,orderByColumns,orderByType);
+	public List<Computer> search(PageWrapper page) {
+		return computerDao.search(page);
 
 	}
 

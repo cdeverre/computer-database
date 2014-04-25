@@ -3,13 +3,7 @@ package projet.dao.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +12,11 @@ import org.springframework.stereotype.Repository;
 import projet.dao.ComputerDao;
 import projet.exception.TransactionException;
 import projet.model.Computer;
+import projet.model.QCompany;
+import projet.model.QComputer;
+import projet.wrapper.PageWrapper;
+
+import com.mysema.query.jpa.hibernate.HibernateQuery;
 
 
 @Repository
@@ -44,90 +43,100 @@ public class ComputerDaoImpl implements ComputerDao {
 	/* *******************************************************/
 	
 	public void create(final Computer computer) throws TransactionException  {
+		logger.debug("Entering create");
 		sessionFactory.getCurrentSession().persist(computer);
+		logger.debug("Leaving create");
 	}
 	
 	public void update(Computer computer) throws TransactionException {
+		logger.debug("Entering update");
 		sessionFactory.getCurrentSession().merge(computer);	
+		logger.debug("Leaving update");
 	}
 	
 
 	
 	public void delete(long id) throws TransactionException {
-		
+		logger.debug("Entering delete");
 		String query ="delete Computer where id= :idComputer" ;
 		sessionFactory.getCurrentSession().createQuery(query).setLong("idComputer", id).executeUpdate();
+		logger.debug("Leaving delete");
 	}
 	
 	
-	
-	public List<Computer> getAllPagination(int currentPage,String orderByColumns,boolean orderByType) {
-		
-		List<Computer> result = null;
-			
-		Order order;
-		if(orderByType) {
-			order=Order.asc(orderByColumns);
-		} else {
-			order=Order.desc(orderByColumns);
-		}
-		
-		Criteria c=sessionFactory.getCurrentSession().createCriteria(Computer.class).addOrder(order);
-		c.setFirstResult((currentPage-1)*ComputerDaoImpl.LIMIT);
-		c.setMaxResults(ComputerDaoImpl.LIMIT);
-		logger.debug("Sending query to list all the computers  "  );
-		
-		result=(ArrayList<Computer>) c.list();
-
-		return result;
-	}
-	
-	public List<Computer> search(String pattern,int currentPage,String orderByColumns,boolean orderByType) {
+	public List<Computer> search(PageWrapper page) {
 		List<Computer> result = null;
 		
-		String searchPattern="%"+pattern+"%";
+		String searchPattern="%"+page.getPattern()+"%";
+		QComputer computer= QComputer.computer;
+		QCompany company = QCompany.company;
 		
-		Order order;
-		if(orderByType) {
-			order=Order.asc(orderByColumns);
-		} else {
-			order=Order.desc(orderByColumns);
+		HibernateQuery q=new HibernateQuery(sessionFactory.getCurrentSession());
+		q.from(computer).leftJoin(computer.company,company);
+		
+		if(	page.getPattern()!=null && !"".equals(page.getPattern())) {
+			q.where(computer.name.like(searchPattern).or( company.name.like(searchPattern)));
 		}
 		
-		Criteria c=sessionFactory.getCurrentSession().createCriteria(Computer.class,"cr").createAlias("cr.company","cy",JoinType.LEFT_OUTER_JOIN);
-		c.add(Restrictions.or(Restrictions.like("cr.name", searchPattern),Restrictions.like("cy.name", searchPattern))).addOrder(order);
-		c.setFirstResult((currentPage-1)*ComputerDaoImpl.LIMIT);
-		c.setMaxResults(ComputerDaoImpl.LIMIT);
-		logger.debug("Sending query to list all the computers  "  );
-		result=(ArrayList<Computer>) c.list();
+		switch (page.getOrderByColumns()) {
+		case "name" :
+			if(page.getOrderByType()) {
+				q.orderBy(computer.name.asc());
+			} else {
+				q.orderBy(computer.name.desc());
+			}
+			break;
+		case "introduced":
+			if(page.getOrderByType()) {
+				q.orderBy(computer.introduced.asc());
+			} else {
+				q.orderBy(computer.introduced.desc());
+			}
+			break;
+		case "discontinued":
+			if(page.getOrderByType()) {
+				q.orderBy(computer.discontinued.asc());
+			} else {
+				q.orderBy(computer.discontinued.desc());
+			}
+			break;
+		case "company":
+			if(page.getOrderByType()) {
+				q.orderBy(computer.company.name.asc());
+			} else {
+				q.orderBy(computer.company.name.desc());
+			}
+			break;
+		default:
+		}
+		
+		q.offset((page.getCurrentPage()-1)*ComputerDaoImpl.LIMIT);
+		q.limit(ComputerDaoImpl.LIMIT);
 
-		System.out.println(result);
+		result=(ArrayList<Computer>) q.list(computer);
+
 		return result;
 		
 	}
-	
-	public int count() {
-		int res = 0;
 		
-		Criteria c=sessionFactory.getCurrentSession().createCriteria(Computer.class);
-		res=((Long) c.setProjection(Projections.rowCount()).uniqueResult()).intValue();
-		logger.debug("Query count sended succesfully");
-
-		return res;
-	}
-	
 	
 	public int count(String pattern) {
 		int res = 0;
-		String searchPattern="%"+pattern+"%";
 		
-		Criteria c=sessionFactory.getCurrentSession().createCriteria(Computer.class,"cr");
-		c.createAlias("cr.company", "cy",JoinType.LEFT_OUTER_JOIN);
-		c.add(Restrictions.or(Restrictions.like("cr.name", searchPattern),Restrictions.like("cy.name", searchPattern)));
-		logger.debug("Sending query to count all the computer ");
-		res=((Long) c.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+		String searchPattern="%"+pattern+"%";
+		QComputer computer= QComputer.computer;
+		QCompany company = QCompany.company;
+		
+		HibernateQuery q=new HibernateQuery(sessionFactory.getCurrentSession());
+		q.from(computer).leftJoin(computer.company,company);
+		
+		if(	pattern!=null && !"".equals(pattern)) {
+			q.where(computer.name.like(searchPattern).or( company.name.like(searchPattern)));
+		}
+		
+		res=((Long)q.count()).intValue();
 		logger.debug("Query sended succesfully");
- 
+
 		return res;
 	}
 	
@@ -135,7 +144,11 @@ public class ComputerDaoImpl implements ComputerDao {
 	public Computer find(long id) {
 		Computer res=null;
 
-		res=(Computer) sessionFactory.getCurrentSession().createCriteria(Computer.class).add(Restrictions.eq("id",id)).uniqueResult();
+		QComputer computer= QComputer.computer;
+		
+		HibernateQuery q=new HibernateQuery(sessionFactory.getCurrentSession());
+		res=(Computer)q.from(computer).where(computer.id.eq(id)).uniqueResult();
+		
 		return res;
 	}
 	

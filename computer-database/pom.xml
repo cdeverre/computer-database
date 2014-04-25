@@ -21,11 +21,13 @@
 		<bonecp.version>0.8.0.RELEASE</bonecp.version>
 		<jstl.version>1.2</jstl.version>
 		<mysql.version>5.1.29</mysql.version>
-		<slf4j.version>1.7.6</slf4j.version>
+		
+		<slf4j.version>1.7.7</slf4j.version>
+		
 		<hibernate.validator.version>5.1.0.Final</hibernate.validator.version>
 		<hibernate.version>4.2.8.Final</hibernate.version>
-		<jcl.over.slf4j.version>1.7.7</jcl.over.slf4j.version>
 		
+		<queryDsl.apt.version>3.3.2</queryDsl.apt.version>
 		
 		<core.version>1.0.0</core.version>
 		<persistence.version>1.0.0</persistence.version>
@@ -120,6 +122,27 @@
 
 
 			<dependency>
+				<groupId>com.mysema.querydsl</groupId>
+			 	<artifactId>querydsl-apt</artifactId>
+				<version>${queryDsl.apt.version}</version>
+			</dependency>  
+			     
+			<dependency>
+				<groupId>com.mysema.querydsl</groupId>
+			 	<artifactId>querydsl-jpa</artifactId>
+				<version>${queryDsl.apt.version}</version>
+			</dependency>
+			
+			 
+			<dependency>
+			  	<groupId>org.slf4j</groupId>
+			  	<artifactId>slf4j-log4j12</artifactId>
+			  	<version>${slf4j.version}</version>
+			</dependency>   
+			
+			
+		<!-- 	 Sous module> -->
+			<dependency>
 				<groupId>formation_excilys</groupId>
 				<artifactId>core</artifactId>
 				<version>${core.version}</version>
@@ -163,7 +186,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
-				<version>${jcl.over.slf4j.version}</version>
+				<version>${slf4j.version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			
@@ -183,6 +206,9 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+      
+      
+    
     </plugins>
  
    

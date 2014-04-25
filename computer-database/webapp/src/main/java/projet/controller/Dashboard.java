@@ -48,21 +48,11 @@ public class Dashboard  {
 		PageWrapper page=new PageWrapper(currentPage, orderByColumns, orderByType, pattern);
 		
 		int numberOfPage=1;
-		if(	page.getPattern()!=null && !"".equals(page.getPattern())) {
-			numberOfComputer=computerServices.count(page.getPattern());
-			numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
-			page.setCurrentPage(Math.min(page.getCurrentPage(),numberOfPage));
-			computerList = computerServices.search(page.getPattern(),page.getCurrentPage(),
-					page.getOrderByColumns(),page.getOrderByType());
-		} else {
-			numberOfComputer=computerServices.count();
-			numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
-			page.setCurrentPage(Math.min(page.getCurrentPage(),numberOfPage));
-			computerList = computerServices.getAllPagination(page.getCurrentPage(),
-			page.getOrderByColumns(),page.getOrderByType());
-		}
-		
-		
+		numberOfComputer=computerServices.count(page.getPattern());
+		numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
+		page.setCurrentPage(Math.min(page.getCurrentPage(),numberOfPage));
+		computerList = computerServices.search(page);
+	
 		map.addAttribute("page",page);
 		
 		map.addAttribute("numberOfPage", numberOfPage );

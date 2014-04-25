@@ -10,8 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.mysema.query.jpa.hibernate.HibernateQuery;
+
 import projet.dao.CompanyDao;
 import projet.model.Company;
+import projet.model.QCompany;
 
 @Repository
 public class CompanyDaoImpl implements CompanyDao {
@@ -38,8 +41,10 @@ public class CompanyDaoImpl implements CompanyDao {
 	public List<Company> getAll() {
 		logger.debug("Enter getAll");
 		List<Company> result=null;
-				
-		result = (ArrayList<Company>) sessionFactory.getCurrentSession().createCriteria(Company.class).list();
+		QCompany company = QCompany.company;		
+		HibernateQuery q=new HibernateQuery(sessionFactory.getCurrentSession());
+		
+		result = (ArrayList<Company>) q.from(company).list(company);
 		
 		logger.debug("Leaving getAll");
 		return result;
@@ -47,9 +52,11 @@ public class CompanyDaoImpl implements CompanyDao {
 	
 	
 	public String getName(long id) {
-		String res=null;
-			
-		res=((Company) sessionFactory.getCurrentSession().createCriteria(Company.class).add(Restrictions.eq("id", id)).uniqueResult()).getName();
+		String res=null;		
+		QCompany company = QCompany.company;
+		HibernateQuery q=new HibernateQuery(sessionFactory.getCurrentSession());
+		
+		res=((Company) q.from(company).where(company.id.eq(id)).uniqueResult()).getName();
 		
 		return res;
 	
