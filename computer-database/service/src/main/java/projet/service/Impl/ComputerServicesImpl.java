@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +13,8 @@ import projet.dao.ComputerDao;
 import projet.dao.LogDao;
 import projet.exception.ComputerNonexistentException;
 import projet.model.Computer;
+import projet.model.Log;
 import projet.service.ComputerServices;
-import projet.wrapper.PageWrapper;
 
 @Service
 @Transactional
@@ -45,8 +46,9 @@ public class ComputerServicesImpl implements ComputerServices {
 	
 	@Transactional(readOnly=false)
 	public void create(Computer computer) {
-		computerDao.create(computer);
-		logDao.insertLog(computer.getId(),"Creating");
+		computerDao.save(computer);
+		Log log=new Log(computer.getId(),"Creating");
+		logDao.save(log);
 		
 		logger.debug("Computer created succesfully");
 	}
@@ -54,8 +56,9 @@ public class ComputerServicesImpl implements ComputerServices {
 	
 	@Transactional(readOnly=false)
 	public void update(Computer computer) {
-		computerDao.update(computer);
-		logDao.insertLog(computer.getId(),"Updating");
+		computerDao.save(computer);
+		Log log=new Log(computer.getId(),"Updating");
+		logDao.save(log);
 			
 		logger.debug("Computer updated succesfully");
 		
@@ -64,36 +67,37 @@ public class ComputerServicesImpl implements ComputerServices {
 	@Transactional(readOnly=false)
 	public void delete(long id) {
 	
-			computerDao.delete(id);
-			logDao.insertLog(id,"Deleting");
+		computerDao.delete(id);
+		Log log=new Log(id,"Deleting");
+		logDao.save(log);
 
-			logger.debug("Computer deleted succesfully");
+		logger.debug("Computer deleted succesfully");
 	}
 		
 	@Transactional(readOnly=true)
 	public Computer find(long id) {
-		Computer c=computerDao.find(id);
+		Computer c=computerDao.findOne(id);
 		if (c==null) {
 			throw new ComputerNonexistentException();
 		}
-		return (computerDao.find(id));
+		return (c);
 	}
 	
 
 	@Transactional(readOnly=true)
 	public int getNumberOfPage(int count) {
-		return (int)Math.ceil((double)count/(double)ComputerDao.LIMIT);
+		return (int)Math.ceil((double)count/(double)13);
 	}
 
 	@Transactional(readOnly=true)
-	public List<Computer> search(PageWrapper page) {
-		return computerDao.search(page);
+	public List<Computer> search(String pattern, Pageable pageable) {
+		return computerDao.findByNameContainingOrCompanyNameContaining(pattern, pattern,pageable).getContent();
 
 	}
 
 	@Transactional(readOnly=true)
 	public int count(String pattern) {
-		return (computerDao.count(pattern));
+		return computerDao.countByNameContainingOrCompanyNameContaining(pattern, pattern).intValue();
 	}
 	
 	

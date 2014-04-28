@@ -1,12 +1,11 @@
 package projet.dao;
 
-import projet.exception.TransactionException;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import projet.model.Log;
 
 
-public interface LogDao {
+public interface LogDao extends JpaRepository<Log,Long>{
 
-	 
-	 
-	 public void insertLog(long id,String message) throws TransactionException;
 
 }

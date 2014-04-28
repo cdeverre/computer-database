@@ -88,12 +88,12 @@
 					</th>
 					<!-- Table header for Company -->
 					<th class="col-md-2"><spring:message code="computer.company"/>  
-						<customTag:link path="Dashboard" orderByColumns="company" orderByType="true"
+						<customTag:link path="Dashboard" orderByColumns="companyName" orderByType="true"
 							 currentPage="${page.currentPage}" pattern="${page.pattern}">
 							 <span class="glyphicon glyphicon-chevron-up"></span>
 						</customTag:link>
 							 
-						<customTag:link path="Dashboard" orderByColumns="company" orderByType="false"
+						<customTag:link path="Dashboard" orderByColumns="companyName" orderByType="false"
 							 currentPage="${page.currentPage}" pattern="${page.pattern}">
 							 <span class="glyphicon glyphicon-chevron-down"></span>
 						</customTag:link>

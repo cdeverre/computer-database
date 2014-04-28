@@ -2,8 +2,9 @@ package projet.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import projet.model.Computer;
-import projet.wrapper.PageWrapper;
 
 
 public interface ComputerServices {
@@ -25,9 +26,9 @@ public interface ComputerServices {
 	
 	public int getNumberOfPage(int count) ;
 	
-	public List<Computer> search(PageWrapper page);
-
 	public int count(String pattern) ;
+
+	public List<Computer> search(String pattern, Pageable pageable);
 	
 	
 	

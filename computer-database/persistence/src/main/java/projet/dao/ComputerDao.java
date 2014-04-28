@@ -1,38 +1,21 @@
 package projet.dao;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 
-import projet.exception.TransactionException;
 import projet.model.Computer;
-import projet.wrapper.PageWrapper;
 
 
-public interface ComputerDao {
+public interface ComputerDao extends CrudRepository<Computer,Long>{
 
-	public static final int LIMIT=13;
 	
 	/* *******************************************************/
 	/* ***               Methods                         *** */
 	/* *******************************************************/
 	
-	public void create(final Computer computer) throws TransactionException ;
+	public Page<Computer> findByNameContainingOrCompanyNameContaining(String name, String companyName, Pageable pageable);
 	
-	
-	public void update(Computer computer) throws TransactionException;
-	
-	
-	public void delete(long id) throws TransactionException ;
-		
-	
-	public int count(String pattern);
-	
-	
-	public Computer find(long id);
-	
-	
-	public List<Computer> search(PageWrapper page);
-	
-	
-	
+	public Long countByNameContainingOrCompanyNameContaining(String name, String companyName);
 	
 }

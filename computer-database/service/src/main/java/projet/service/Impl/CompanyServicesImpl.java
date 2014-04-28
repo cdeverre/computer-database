@@ -32,12 +32,12 @@ public class CompanyServicesImpl implements CompanyServices{
 
 	@Transactional(readOnly=true)
 	public List<Company> getAll() {
-		return(companyDao.getAll());
+		return(companyDao.findAll());
 	}
 	
 	@Transactional(readOnly=true)
 	public String getName(long id) {
-		return(companyDao.getName(id));
+		return(companyDao.findOne(id).getName());
 	}
 
 	@Transactional(readOnly=true)

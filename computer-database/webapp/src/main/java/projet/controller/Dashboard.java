@@ -3,6 +3,9 @@ package projet.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,10 +51,19 @@ public class Dashboard  {
 		PageWrapper page=new PageWrapper(currentPage, orderByColumns, orderByType, pattern);
 		
 		int numberOfPage=1;
+		
+		Sort sort=null;
+		if (page.getOrderByType()) {
+			sort=new Sort(Sort.Direction.ASC,page.getOrderByColumns());
+		} else {
+			sort=new Sort(Sort.Direction.DESC,page.getOrderByColumns());
+		}
+		Pageable pageable=new PageRequest(page.getCurrentPage()-1, 13, sort);
+		
 		numberOfComputer=computerServices.count(page.getPattern());
 		numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
 		page.setCurrentPage(Math.min(page.getCurrentPage(),numberOfPage));
-		computerList = computerServices.search(page);
+		computerList = computerServices.search(page.getPattern(),pageable);
 	
 		map.addAttribute("page",page);
 		

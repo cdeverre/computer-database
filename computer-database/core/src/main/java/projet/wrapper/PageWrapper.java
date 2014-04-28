@@ -41,7 +41,11 @@ public class PageWrapper {
 		if (orderByTypeString!=null && ("true".equals(orderByTypeString) || "false".equals(orderByTypeString))){
 			this.orderByType=Boolean.parseBoolean(orderByTypeString);
 		}
-		this.pattern=pattern;
+		if (pattern==null) {
+			this.pattern="";
+		}else {
+			this.pattern=pattern;
+		}
 		
 	}
 

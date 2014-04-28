@@ -1,21 +1,10 @@
 package projet.dao;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import projet.model.Company;
 
 
-public interface CompanyDao {
+public interface CompanyDao extends JpaRepository<Company,Long> {
 
-
-	
-	public List<Company> getAll() ;
-	
-	
-	public String getName(long id);
-
-	
-	
-		
-	
 }

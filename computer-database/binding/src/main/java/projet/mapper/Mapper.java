@@ -77,7 +77,10 @@ public class Mapper {
 		if (d!=null) {
 			discontinued = d.toString(pattern);
 		}
-		String company_id = Long.toString(computer.getCompany().getId());
+		String company_id="0";
+		if (computer.getCompany()!=null) {
+			company_id = Long.toString(computer.getCompany().getId());
+		}
 		
 		return new ComputerDto(id,name,introduced,discontinued,company_id);
 	}
