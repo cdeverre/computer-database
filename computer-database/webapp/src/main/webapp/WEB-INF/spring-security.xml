@@ -7,17 +7,25 @@
 	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
  
 	<http auto-config="true">
-		<intercept-url pattern="/EditComputer**" access="ROLE_USER" />
-		<intercept-url pattern="/AddComputer**" access="ROLE_USER" />
-		<intercept-url pattern="/DeleteComputer**" access="ROLE_USER" />
+		<intercept-url pattern="/EditComputer**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/AddComputer**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/DeleteComputer**" access="ROLE_ADMIN" />
+		<form-login 
+		    login-page="/AdminForm" 
+		    default-target-url="/Dashboard" 
+			authentication-failure-url="/AdminForm?error" 
+			username-parameter="username"
+			password-parameter="password" />
+		<logout logout-success-url="/Dashboard" />
 	</http>
  
 	<authentication-manager>
 	  <authentication-provider>
 	    <user-service>
-		<user name="admin" password="123456" authorities="ROLE_USER" />
+		<user name="admin" password="123456" authorities="ROLE_ADMIN" />
 	    </user-service>
 	  </authentication-provider>
 	</authentication-manager>
  
+	
 </beans:beans>

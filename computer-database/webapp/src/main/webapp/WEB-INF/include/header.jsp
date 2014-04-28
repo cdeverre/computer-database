@@ -3,6 +3,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>  
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 	
 
 <!DOCTYPE html>
@@ -83,12 +84,19 @@ $(document).ready(function(){
 <body>
 	<header class="navbar navbar-inverse navbar-static-top">
 		<div class="text-right">
+			<sec:authorize ifAnyGranted="ROLE_ANONYMOUS">
+				<a href="AdminForm"> <spring:message code="login" /></a>
+			</sec:authorize>
+			<sec:authorize ifAnyGranted="ROLE_ADMIN">
+				<a href="j_spring_security_logout"> <spring:message code="logout" /></a>
+			</sec:authorize>
 			<a href="Dashboard?language=en"><img src="css/images/english.png"/></a>
 			<a href="Dashboard?language=fr"><img src="css/images/francais.png"/></a>
 		</div>
 		<h1 class="fill">
 			<a href="Dashboard"> Application - Computer Database </a>
 		</h1>
+
 		
 	</header>
 	

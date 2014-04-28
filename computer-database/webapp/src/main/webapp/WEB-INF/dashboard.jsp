@@ -1,11 +1,12 @@
 <jsp:include page="include/header.jsp" />
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="customTag" tagdir="/WEB-INF/tags/" %>
 <%@ taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <spring:message code="date.pattern" var="date_pattern"/>
 
@@ -17,10 +18,12 @@
 				placeholder="<spring:message code="search.text"/>">
 			<input id="searchsubmit" value="<spring:message code="search.submit"/>" class="btn btn-primary" type="submit">
 		</form>
-		<customTag:link path="AddComputer" preference='class="btn btn-success" id="add"'> 
-			<span class="glyphicon glyphicon-plus"></span>
-			<spring:message code="add"/>
-		</customTag:link>
+		<sec:authorize ifAnyGranted="ROLE_ADMIN">
+			<customTag:link path="AddComputer" preference='class="btn btn-success" id="add"'> 
+				<span class="glyphicon glyphicon-plus"></span>
+				<spring:message code="add"/>
+			</customTag:link>
+		</sec:authorize>
 	</div>
 
 	<c:if test="${add==true}">
@@ -98,7 +101,9 @@
 							 <span class="glyphicon glyphicon-chevron-down"></span>
 						</customTag:link>
 					</th>
-					<th class="col-md-1"><spring:message code="computer.delete"/></th>
+					<sec:authorize ifAnyGranted="ROLE_ADMIN">
+						<th class="col-md-1"><spring:message code="computer.delete"/></th>
+					</sec:authorize>
 				</tr>
 			</thead>
 			
@@ -107,12 +112,18 @@
 				<c:forEach var="computer" items="${computerList}" >
 					<tr>
 						<td>
-							<customTag:link path="EditComputer" otherParameters="id=${computer.id }" 
-							currentPage="${page.currentPage}" pattern="${page.pattern} "
-							orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }">
+							<sec:authorize ifAnyGranted="ROLE_ADMIN">
+								<customTag:link path="EditComputer" otherParameters="id=${computer.id }" 
+								currentPage="${page.currentPage}" pattern="${page.pattern} "
+								orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }">
+									${computer.name }
+								</customTag:link>
+							</sec:authorize>
+							<sec:authorize ifAnyGranted="ROLE_ANONYMOUS">
 								${computer.name }
-							</customTag:link>
+							</sec:authorize>
 						</td>
+					
 						<td>
 							<joda:format value="${computer.introduced}" 
 							pattern="${date_pattern }"/> 
@@ -122,15 +133,17 @@
 							pattern="${date_pattern }"/>
 						</td>
 						<td>${computer.company.name}</td>
-						<td>
-							<customTag:link path="DeleteComputer" otherParameters="id=${computer.id }" 
-							preference='class="btn btn-danger" id="delete"'
-							currentPage="${page.currentPage}" pattern="${page.pattern}"
-							orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }">
-								<span class="glyphicon glyphicon-trash"></span> 
-								<spring:message code="computer.delete"/>
-							</customTag:link>
-						</td>
+						<sec:authorize ifAnyGranted="ROLE_ADMIN">
+							<td>
+								<customTag:link path="DeleteComputer" otherParameters="id=${computer.id }" 
+								preference='class="btn btn-danger" id="delete"'
+								currentPage="${page.currentPage}" pattern="${page.pattern}"
+								orderByColumns="${page.orderByColumns}" orderByType="${page.orderByType }">
+									<span class="glyphicon glyphicon-trash"></span> 
+									<spring:message code="computer.delete"/>
+								</customTag:link>
+							</td>
+						</sec:authorize>
 					</tr>
 				</c:forEach>
 
