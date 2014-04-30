@@ -90,7 +90,7 @@ public class ComputerServicesImpl implements ComputerServices {
 	}
 
 	@Transactional(readOnly=true)
-	public List<Computer> search(String pattern, Pageable pageable) {
+	public List<Computer> getAll(String pattern, Pageable pageable) {
 		return computerDao.findByNameContainingOrCompanyNameContaining(pattern, pattern,pageable).getContent();
 
 	}

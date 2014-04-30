@@ -15,7 +15,7 @@
         <servlet-name>DispatcherServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-  
+  	
   	<listener>
 		<listener-class>
        		org.springframework.web.context.ContextLoaderListener
@@ -29,7 +29,7 @@
   </error-page>
   
   
-           <!-- Loads Spring Security config file -->
+     <!-- Loads Spring Security config file -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>

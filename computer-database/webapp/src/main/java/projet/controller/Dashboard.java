@@ -58,12 +58,13 @@ public class Dashboard  {
 		} else {
 			sort=new Sort(Sort.Direction.DESC,page.getOrderByColumns());
 		}
-		Pageable pageable=new PageRequest(page.getCurrentPage()-1, 13, sort);
+		
 		
 		numberOfComputer=computerServices.count(page.getPattern());
 		numberOfPage=Math.max(1,computerServices.getNumberOfPage(numberOfComputer));
 		page.setCurrentPage(Math.min(page.getCurrentPage(),numberOfPage));
-		computerList = computerServices.search(page.getPattern(),pageable);
+		Pageable pageable=new PageRequest(page.getCurrentPage()-1, 13, sort);
+		computerList = computerServices.getAll(page.getPattern(),pageable);
 	
 		map.addAttribute("page",page);
 		

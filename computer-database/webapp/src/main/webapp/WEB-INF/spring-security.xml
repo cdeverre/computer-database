@@ -19,13 +19,15 @@
 		<logout logout-success-url="/Dashboard" />
 	</http>
  
-	<authentication-manager>
-	  <authentication-provider>
-	    <user-service>
-		<user name="admin" password="123456" authorities="ROLE_ADMIN" />
-	    </user-service>
-	  </authentication-provider>
+	 <authentication-manager>
+		  <authentication-provider>
+		  <password-encoder hash="sha" />
+			<jdbc-user-service data-source-ref="BoneCP"
+			  users-by-username-query=
+			    "select username,password, enabled from users where username=?"
+			  authorities-by-username-query=
+			    "select username, role from user_roles where username =?  " />
+		  </authentication-provider>
 	</authentication-manager>
- 
 	
 </beans:beans>

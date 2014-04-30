@@ -29,13 +29,14 @@
 		<hibernate.validator.version>5.1.0.Final</hibernate.validator.version>
 		<hibernate.version>4.2.8.Final</hibernate.version>
 		
-		<queryDsl.apt.version>3.3.2</queryDsl.apt.version>
+		<cxf.version>3.0.0-milestone2</cxf.version>
 		
 		<core.version>1.0.0</core.version>
 		<persistence.version>1.0.0</persistence.version>
 		<service.version>1.0.0</service.version>
 		<binding.version>1.0.0</binding.version>
 		<webapp.version>1.0.0</webapp.version>
+		<webservice.version>1.0.0</webservice.version>
 		
 		
 		
@@ -164,6 +165,18 @@
 				</exclusions>
 			</dependency>
 			
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			
 		<!-- 	 Sous module> -->
 			<dependency>
 				<groupId>formation_excilys</groupId>
@@ -194,6 +207,13 @@
 				<artifactId>webapp</artifactId>
 				<version>${webapp.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>formation_excilys</groupId>
+				<artifactId>webservice</artifactId>
+				<version>${webservice.version}</version>
+			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 	
@@ -243,5 +263,6 @@
     <module>service</module>
     <module>binding</module>
     <module>core</module>
+    <module>webservice</module>
   </modules>
 </project>
